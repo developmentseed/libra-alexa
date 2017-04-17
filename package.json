@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "bundle": "browserify index.js > bundle.js",
+    "server": "node server.js",
+    "start": "npm run bundle && npm run server",
     "bundle-css": "node-sass styles/style.scss styles.css",
     "watch-css": "node-sass styles/style.scss styles.css -w"
   },
