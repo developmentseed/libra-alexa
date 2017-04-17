@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint . --ext .js",
     "bundle": "browserify index.js > bundle.js",
     "server": "node server.js",
     "start": "npm run bundle && npm run server"

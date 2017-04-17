@@ -1,12 +1,12 @@
-const assert = require('assert');
 const path = require('path');
 const qs = require('qs');
 
 const express = require('express');
 const bodyParser = require('body-parser');
 const multer = require('multer');
+const request = require('request');
 
-const uploadsDir = path.join(__dirname, 'uploads')
+const uploadsDir = path.join(__dirname, 'uploads');
 const upload = multer({ dest: uploadsDir });
 const app = express();
 
@@ -16,8 +16,8 @@ app.use(bodyParser.json());
 app.use('/', express.static(__dirname));
 
 app.get('/auth', (req, res) => {
-  const query = qs.stringify(req.query)
-  console.log('req.query', req.query)
+  const query = qs.stringify(req.query);
+  console.log('req.query', req.query);
 
   res.redirect(301, `/?${query}`);
 });
@@ -32,8 +32,8 @@ app.get('/audio-response', (req, res) => {
 
   getm3u(url, function (err, urls) {
     if (err) return res.status(500).json({ error: err.message });
-    res.json(urls)
-  })
+    res.json(urls);
+  });
 });
 
 function getm3u (url, callback) {
@@ -41,9 +41,9 @@ function getm3u (url, callback) {
 
   request(url, function (err, res, body) {
     if (err) return callback(err);
-    if (body) urls.push(body)
-    callback(null, urls)
-  })
+    if (body) urls.push(body);
+    callback(null, urls);
+  });
 }
 
 app.listen(3131);
