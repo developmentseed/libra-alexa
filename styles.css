@@ -1,0 +1,200 @@
+body {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: 'Roboto', sans-serif; }
+
+ul {
+  margin: 0;
+  padding: 0; }
+
+.content {
+  flex: 1;
+  background-image: radial-gradient(circle, #292929, #000);
+  background-repeat: no-repeat;
+  height: 100%; }
+
+.inner {
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 4rem;
+  padding-right: 4rem; }
+  .inner:before, .inner:after {
+    content: " ";
+    display: table; }
+  .inner:after {
+    clear: both; }
+
+.microphone__background {
+  background-color: white;
+  width: 100px;
+  height: 100px;
+  border-radius: 999px;
+  position: relative;
+  padding: 15px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: auto;
+  box-shadow: 0px 1px 31px 5px #4AE2D6;
+  opacity: 1;
+  transition: opacity 0.24s ease 0s;
+  transition: box-shadow .2s ease-in-out; }
+
+.microphone__background--images {
+  background-color: white;
+  width: 25px;
+  height: 25px;
+  border-radius: 999px;
+  position: relative;
+  padding: 10px;
+  box-shadow: 0px 1px 31px 5px #4AE2D6;
+  float: left;
+  margin: 1.5rem;
+  transition: box-shadow .2s ease-in-out; }
+
+.microphone--listening {
+  animation: 1500ms pulse-listening 500ms ease-in-out infinite; }
+
+.microphone--recieving {
+  animation: 1500ms pulse-recieving 500ms ease-in-out infinite; }
+
+.microphone--responding {
+  animation: 1500ms pulse-responding 500ms ease-in-out infinite; }
+
+@keyframes pulse-listening {
+  0% {
+    box-shadow: 0px 1px 31px 5px #4AE2D6; }
+  15% {
+    box-shadow: 0px 1px 31px 10px #4AE2D6; }
+  30% {
+    box-shadow: 0px 1px 31px 15px #4AE2D6; }
+  45% {
+    box-shadow: 0px 1px 31px 8px #4AE2D6; }
+  60% {
+    box-shadow: 0px 1px 31px 12px #4AE2D6; }
+  75% {
+    box-shadow: 0px 1px 31px 18px #4AE2D6; }
+  90% {
+    box-shadow: 0px 1px 31px 10px #4AE2D6; }
+  100% {
+    box-shadow: 0px 1px 31px 7px #4AE2D6; } }
+
+@keyframes pulse-recieving {
+  0% {
+    box-shadow: 0px 1px 31px 5px #CD50E7; }
+  15% {
+    box-shadow: 0px 1px 31px 10px #CD50E7; }
+  30% {
+    box-shadow: 0px 1px 31px 15px #CD50E7; }
+  45% {
+    box-shadow: 0px 1px 31px 8px #CD50E7; }
+  60% {
+    box-shadow: 0px 1px 31px 12px #CD50E7; }
+  75% {
+    box-shadow: 0px 1px 31px 18px #CD50E7; }
+  90% {
+    box-shadow: 0px 1px 31px 10px #CD50E7; }
+  100% {
+    box-shadow: 0px 1px 31px 7px #CD50E7; } }
+
+@keyframes pulse-responding {
+  0% {
+    box-shadow: 0px 1px 31px 5px #B8E986; }
+  15% {
+    box-shadow: 0px 1px 31px 10px #B8E986; }
+  30% {
+    box-shadow: 0px 1px 31px 15px #B8E986; }
+  45% {
+    box-shadow: 0px 1px 31px 8px #B8E986; }
+  60% {
+    box-shadow: 0px 1px 31px 12px #B8E986; }
+  75% {
+    box-shadow: 0px 1px 31px 18px #B8E986; }
+  90% {
+    box-shadow: 0px 1px 31px 10px #B8E986; }
+  100% {
+    box-shadow: 0px 1px 31px 7px #B8E986; } }
+
+.button {
+  display: inline-block;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  line-height: 1.5rem;
+  font-size: 0.875rem;
+  padding: 0.25rem 0.75rem;
+  min-width: 2rem;
+  background: none;
+  text-shadow: none;
+  border: 0;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  border: solid 2px #FFF;
+  color: #FFF;
+  transition: background-color 0.24s ease 0s;
+  /* States */ }
+  .button:hover {
+    background-color: rgba(255, 255, 255, 0.4); }
+
+.button--login {
+  margin-top: 2rem;
+  float: left; }
+
+.content__header {
+  float: left;
+  width: 100%;
+  opacity: 0;
+  transition: opacity 0.24s ease 0s; }
+
+.image__content {
+  float: right;
+  color: #fff;
+  margin-top: 1rem; }
+  .image__content .image__title {
+    margin-bottom: 0;
+    font-weight: 500;
+    font-size: 1.25rem;
+    margin-top: 0; }
+  .image__content .image__meta li {
+    margin-top: 0.25rem;
+    list-style: none;
+    display: inline-block;
+    font-weight: 300; }
+    .image__content .image__meta li:first-child {
+      padding-right: 0.75rem;
+      border-right: solid 1px rgba(255, 255, 255, 0.6); }
+    .image__content .image__meta li:last-child {
+      margin-left: 0.5rem; }
+
+.image__info {
+  float: left;
+  border-left: solid 1px rgba(255, 255, 255, 0.6);
+  padding-left: 1.5rem; }
+
+.image__count {
+  float: left;
+  margin-top: 1rem;
+  padding-right: 1.5rem; }
+  .image__count li {
+    display: inline-block;
+    height: 10px;
+    width: 10px;
+    border-radius: 999px;
+    background-color: #fff; }
+  .image__count .filled {
+    background-color: #4AE2D6; }
+
+.revealed {
+  opacity: 1; }
+
+.hidden {
+  opacity: 0; }
