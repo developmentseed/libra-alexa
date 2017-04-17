@@ -3,10 +3,46 @@
 <head>
 <title>alexa satellite</title>
 <meta charset="utf-8">
-<link rel="stylesheet" href="/style.css">
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-<button id="login">Log in to Alexa</button>
+	<section class="content">
+    <div class="inner">
+      <header class="content__header">
+        <div  class='page__content'>
+          <button class='button button--login' id="login">Log in</button>
+          <div class="microphone__background--images">
+            <div class='microphone__icon'>
+              <img src="/graphics/microphone.svg" alt="microphone" height="25" width="25">
+            </div>
+          </div>
+        </div>
+        <div class='image__content'>
+          <div class='image__count'>
+            <ul>
+              <li class='filled'></li>
+              <li></li>
+              <li></li>
+              <li></li>
+            </ul>
+          </div>
+          <div class='image__info'>
+            <h2 class='image__title'>Florence, Italy</h2>
+            <ul class='image__meta'>
+              <li class='image__meta--item'>2015-07-07</li>
+              <li class='image__meta--item'>Landsat 8</li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="microphone__background">
+        <div class='microphone__icon'>
+          <img src="/graphics/microphone.svg" alt="microphone" height="100" width="100">
+        </div>
+      </div>
+    </div>
+  </section>
 <script src="/bundle.js"></script>
 </body>
 </html>
