@@ -7,7 +7,9 @@
     "lint": "eslint . --ext .js",
     "bundle": "browserify index.js > bundle.js",
     "server": "node server.js",
-    "start": "npm run bundle && npm run server"
+    "start": "npm run bundle && npm run server",
+    "bundle-css": "node-sass styles/style.scss styles.css",
+    "watch-css": "node-sass styles/style.scss styles.css -w"
   },
   "browserify": {
     "transform": [
@@ -45,6 +47,7 @@
     "xhr": "^2.4.0"
   },
   "devDependencies": {
-    "browserify": "^14.3.0"
+    "browserify": "^14.3.0",
+    "node-sass": "^4.5.2"
   }
 }
