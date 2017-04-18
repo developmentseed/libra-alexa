@@ -1,0 +1,19 @@
+{
+  "name": "alexa-satellite-skill",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "zip": "zip alexa-satellite.zip -X -r ./* -x config/* -x config/slot-types/*",
+    "deploy": "npm run zip && aws lambda update-function-code --function-name alexa-satellite-imagery --zip-file fileb://alexa-satellite.zip"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "placename": "^1.0.1"
+  },
+  "dependencies": {
+    "all-the-cities": "^2.0.0",
+    "request": "^2.81.0"
+  }
+}

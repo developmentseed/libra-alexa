@@ -4,3 +4,4 @@ tmp
 *.log*
 uploads
 bundle.js
+*.zip

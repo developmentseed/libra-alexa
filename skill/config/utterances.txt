@@ -1,0 +1,44 @@
+GetImageIntent get me the {EuropeCity}
+GetImageIntent show me the {EuropeCity}
+GetImageIntent get the {EuropeCity}
+GetImageIntent show the {EuropeCity}
+GetImageIntent get me {EuropeCity}
+GetImageIntent show me {EuropeCity}
+GetImageIntent get {EuropeCity}
+GetImageIntent show {EuropeCity}
+
+GetImageIntent get me the {ImageSynonym} for {EuropeCity}
+GetImageIntent show me the {ImageSynonym} for {EuropeCity}
+GetImageIntent get the {ImageSynonym} for {EuropeCity}
+GetImageIntent show the {ImageSynonym} for {EuropeCity}
+GetImageIntent get me {ImageSynonym} for {EuropeCity}
+GetImageIntent show me {ImageSynonym} for {EuropeCity}
+GetImageIntent get {ImageSynonym} for {EuropeCity}
+GetImageIntent show {ImageSynonym} for {EuropeCity}
+
+GetImageIntent get me the latest {ImageSynonym} for {EuropeCity}
+GetImageIntent show me the latest {ImageSynonym} for {EuropeCity}
+GetImageIntent get the latest {ImageSynonym} for {EuropeCity}
+GetImageIntent show the latest {ImageSynonym} for {EuropeCity}
+GetImageIntent get me latest {ImageSynonym} for {EuropeCity}
+GetImageIntent show me latest {ImageSynonym} for {EuropeCity}
+GetImageIntent get latest {ImageSynonym} for {EuropeCity}
+GetImageIntent show latest {ImageSynonym} for {EuropeCity}
+
+GetImageIntent get me the latest {ImageSynonym} for {EuropeCity} with no clouds
+GetImageIntent show me the latest {ImageSynonym} for {EuropeCity} with no clouds
+GetImageIntent get the latest {ImageSynonym} for {EuropeCity} with no clouds
+GetImageIntent show the latest {ImageSynonym} for {EuropeCity} with no clouds
+GetImageIntent get me latest {ImageSynonym} for {EuropeCity} with no clouds
+GetImageIntent show me latest {ImageSynonym} for {EuropeCity} with no clouds
+GetImageIntent get latest {ImageSynonym} for {EuropeCity} with no clouds
+GetImageIntent show latest {ImageSynonym} for {EuropeCity} with no clouds
+
+GetImageIntent get me the latest {ImageSynonym} for {EuropeCity} with {CloudPercentage} percent clouds
+GetImageIntent show me the latest {ImageSynonym} for {EuropeCity} with {CloudPercentage} percent clouds
+GetImageIntent get the latest {ImageSynonym} for {EuropeCity} with {CloudPercentage} percent clouds
+GetImageIntent show the latest {ImageSynonym} for {EuropeCity} with {CloudPercentage} percent clouds
+GetImageIntent get me latest {ImageSynonym} for {EuropeCity} with {CloudPercentage} percent clouds
+GetImageIntent show me latest {ImageSynonym} for {EuropeCity} with {CloudPercentage} percent clouds
+GetImageIntent get latest {ImageSynonym} for {EuropeCity} with {CloudPercentage} percent clouds
+GetImageIntent show latest {ImageSynonym} for {EuropeCity} with {CloudPercentage} percent clouds
