@@ -1,0 +1,36 @@
+{
+  "intents": [
+    {
+      "intent": "GetImageIntent",
+      "slots": [
+        {
+          "name": "CloudPercentage",
+          "type": "CLOUD_PERCENTAGE"
+        },
+        {
+          "name": "ImageSynonym",
+          "type": "IMAGE_SYNONYM"
+        },
+        {
+          "name": "EuropeCity",
+          "type": "AMAZON.EUROPE_CITY"
+        }
+      ]
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    },
+    {
+      "intent": "AMAZON.PauseIntent"
+    },
+    {
+      "intent": "AMAZON.ResumeIntent"
+    }
+  ]
+}

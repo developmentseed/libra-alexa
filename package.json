@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "zip-skill": "zip alexa-satellite.zip -X -r skill/* -x skill/config/* -x skill/config/slot-types/*",
+    "deploy-skill": "",
     "lint": "eslint . --ext .js",
     "bundle": "browserify index.js > bundle.js",
     "server": "node server.js",
