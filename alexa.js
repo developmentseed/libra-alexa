@@ -50,8 +50,7 @@ module.exports = function alexaVoiceService (options) {
   function sendAudio (dataView) {
     alexa.sendAudio(dataView)
       .then(({ xhr, response }) => {
-        if (!response.multipart.length) return console.log('empty');
-
+        if (!response.multipart.length) return console.error('empty');
         let directives;
         const audioResponses = {};
         const promises = [];
@@ -64,7 +63,7 @@ module.exports = function alexaVoiceService (options) {
             try {
               body = JSON.parse(body);
             } catch (err) {
-              console.log(err);
+              console.error(err);
             }
 
             if (body && body.messageBody && body.messageBody.directives) {
@@ -113,7 +112,7 @@ module.exports = function alexaVoiceService (options) {
                 streamUrl = streamUrl.replace(/!.*$/, '');
 
                 request(`/audio-response?url=${streamUrl}`, function (err, res, body) {
-                  if (err) return console.log(err);
+                  if (err) return console.error(err);
                   const urls = event.currentTarget.response;
 
                   urls.forEach(url => {
@@ -132,7 +131,7 @@ module.exports = function alexaVoiceService (options) {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   }
 
