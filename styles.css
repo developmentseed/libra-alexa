@@ -13,7 +13,9 @@ ul {
 .content {
   flex: 1;
   background-image: radial-gradient(circle, #292929, #000);
+  background-size: cover;
   background-repeat: no-repeat;
+  background-position: center;
   height: 100%; }
 
 .inner {
@@ -64,11 +66,11 @@ ul {
 .microphone--listening {
   animation: 1500ms pulse-listening 500ms ease-in-out infinite; }
 
-.microphone--recieving {
+.microphone--receiving {
   animation: 1500ms pulse-recieving 500ms ease-in-out infinite; }
 
 .microphone--responding {
-  animation: 1500ms pulse-responding 500ms ease-in-out infinite; }
+  animation: 1500ms pulse-responding 500ms ease-in-out; }
 
 @keyframes pulse-listening {
   0% {
@@ -152,7 +154,6 @@ ul {
 .content__header {
   float: left;
   width: 100%;
-  opacity: 0;
   transition: opacity 0.24s ease 0s; }
 
 .image__content {
@@ -177,7 +178,6 @@ ul {
 
 .image__info {
   float: left;
-  border-left: solid 1px rgba(255, 255, 255, 0.6);
   padding-left: 1.5rem; }
 
 .image__count {

@@ -69,31 +69,52 @@ function getImageResponse (intent, session, callback) {
     sessionAttributes.city = slots.EuropeCity.value
 
     sessionAttributes.city = cities.filter(city => {
-      return city.name.match(sessionAttributes.city)
+      return city.name === sessionAttributes.city;
     })[0]
 
     const lon = sessionAttributes.city.lon
     const lat = sessionAttributes.city.lat
+    var apiUrl = `https://api.developmentseed.org/satellites/?contains=${lon},${lat}&limit=1`
+
+    if (slots.CloudPercentage.value) {
+      const clouds = parseInt(slots.CloudPercentage.value);
+      const cloudsMin = clouds - 5;
+      const cloudsMax = clouds + 5;
+      apiUrl += `&cloud_from=${cloudsMin}&cloud_to=${cloudsMax}`;
+    }
 
     console.log('sessionAttributes.city', sessionAttributes.city)
-    var apiUrl = `https://api.developmentseed.org/satellites/?contains=${lon},${lat}&limit=1`
+
     console.log('apiUrl', apiUrl)
     request(apiUrl, function (err, res, body) {
+      body = JSON.parse(body)
       console.log('satutils response', body)
 
       options = {
         title: sessionAttributes.city + ' Satellite Images',
-        output: 'Here\'s what I\'ve got for ' + sessionAttributes.city,
+        output: 'Here\'s what I\'ve got for ' + sessionAttributes.city.name,
         endSession: false
       }
 
       const response = buildSpeechletResponse(options);
       console.log('response', response)
-      sessionAttributes.image = response.results[0]
+      sessionAttributes.image = body.results[0]
       console.log('sessionAttributes', sessionAttributes)
-      callback(sessionAttributes, response);
-    })
+      sendDataToApp(sessionAttributes, function (err, res, body) {
+        if (err) console.log(err)
+        callback(sessionAttributes, response);
+      });
+    });
   }
+}
+
+function sendDataToApp (data, callback) {
+  var options = {
+    method: 'POST',
+    url: 'https://fa4b844a.ngrok.io/session-data',
+    json: data
+  }
+  request(options, callback)
 }
 
 function endSessionResponse (callback) {
