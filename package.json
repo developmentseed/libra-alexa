@@ -4,13 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "deploy-skill": "",
-    "lint": "eslint . --ext .js",
-    "bundle": "browserify index.js > bundle.js",
-    "server": "node server.js",
-    "start": "npm run bundle && npm run server",
+    "bundle-js": "browserify index.js > bundle.js",
     "bundle-css": "node-sass styles/style.scss styles.css",
-    "watch-css": "node-sass styles/style.scss styles.css -w"
+    "bundle": "npm run bundle-js && npm run bundle-css",
+    "watch-css": "node-sass styles/style.scss styles.css -w",
+    "server": "node server.js",
+    "start": "npm run server"
   },
   "browserify": {
     "transform": [
