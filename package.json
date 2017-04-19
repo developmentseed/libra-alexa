@@ -1,10 +1,10 @@
 {
-  "name": "alexa-satellite",
+  "name": "libra-alexa",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "zip-skill": "zip alexa-satellite.zip -X -r skill/* -x skill/config/* -x skill/config/slot-types/*",
+    "zip-skill": "zip libra-alexa.zip -X -r skill/* -x skill/config/* -x skill/config/slot-types/*",
     "deploy-skill": "",
     "lint": "eslint . --ext .js",
     "bundle": "browserify index.js > bundle.js",
@@ -27,14 +27,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/developmentseed/alexa-satellite.git"
+    "url": "git+https://github.com/developmentseed/libra-alexa.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/developmentseed/alexa-satellite/issues"
+    "url": "https://github.com/developmentseed/libra-alexa/issues"
   },
-  "homepage": "https://github.com/developmentseed/alexa-satellite#readme",
+  "homepage": "https://github.com/developmentseed/libra-alexa#readme",
   "dependencies": {
     "alexa-voice-service": "0.0.7",
     "babel-preset-es2015": "^6.24.1",

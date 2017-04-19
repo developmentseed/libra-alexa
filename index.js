@@ -85,7 +85,7 @@ function imageInfoView (data) {
 }
 
 function pageContentView () {
-  var token = localStorage.getItem('alexa-satellite-token');
+  var token = localStorage.getItem('libra-alexa-token');
 
   if (token) {
     return html`<div class='page__content'>

@@ -1,11 +1,11 @@
 {
-  "name": "alexa-satellite-skill",
+  "name": "libra-alexa-skill",
   "version": "1.0.0",
   "description": "",
   "main": "handler.js",
   "scripts": {
-    "zip": "zip alexa-satellite.zip -X -r ./* -x config/* -x config/slot-types/*",
-    "deploy": "npm run zip && aws lambda update-function-code --function-name alexa-satellite-imagery --zip-file fileb://alexa-satellite.zip"
+    "zip": "zip libra-alexa.zip -X -r ./* -x config/* -x config/slot-types/*",
+    "deploy": "npm run zip && aws lambda update-function-code --function-name alexa-satellite-imagery --zip-file fileb://libra-alexa.zip"
   },
   "author": "",
   "license": "ISC",

@@ -1,4 +1,4 @@
-# alexa-satellite
+# libra-alexa
 
 # Start the server
 

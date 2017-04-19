@@ -13,10 +13,10 @@ module.exports = function alexaVoiceService (options) {
   function start () {
     alexa.getTokenFromUrl()
       .then(() => alexa.getToken())
-      .then(token => localStorage.setItem('alexa-satellite-token', token))
+      .then(token => localStorage.setItem('libra-alexa-token', token))
       .then(() => alexa.requestMic())
       .catch(() => {
-        const cachedToken = localStorage.getItem('alexa-satellite-token');
+        const cachedToken = localStorage.getItem('libra-alexa-token');
 
         if (cachedToken) {
           alexa.setToken(cachedToken);
