@@ -14,14 +14,21 @@ var header = document.querySelector('.content__header');
 
 html.update(document.querySelector('.page__content'), pageContentView())
 
-io.on('connect', function () {});
-io.on('disconnect', function () {});
+io.on('connect', function () {
+  console.log('connected')
+});
+
+io.on('disconnect', function () {
+  console.log('disconnected')
+});
 
 io.on('session-data', function (data) {
+  console.log('session-data')
   mic.className = micResponding;
   var bg = 'url(' + data.image.thumbnail + ')';
   var container = document.querySelector('.content');
   container.style.backgroundImage = bg;
+  console.log('container', container, bg)
   elementClass(recordButton).add('hidden');
   elementClass(header).add('revealed');
   html.update(document.querySelector('.image__info'), imageInfoView(data));

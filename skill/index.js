@@ -111,7 +111,7 @@ function getImageResponse (intent, session, callback) {
 function sendDataToApp (data, callback) {
   var options = {
     method: 'POST',
-    url: 'https://fa4b844a.ngrok.io/session-data',
+    url: 'https://arcane-chamber-39897.herokuapp.com',
     json: data
   }
   request(options, callback)

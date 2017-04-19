@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "postinstall": "npm run bundle",
     "bundle-js": "browserify index.js > bundle.js",
     "bundle-css": "node-sass styles/style.scss styles.css",
     "bundle": "npm run bundle-js && npm run bundle-css",
