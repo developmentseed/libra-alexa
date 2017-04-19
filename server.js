@@ -56,4 +56,4 @@ function getm3u (url, callback) {
   });
 }
 
-server.listen(3131);
+server.listen(process.env.PORT || 3000);
