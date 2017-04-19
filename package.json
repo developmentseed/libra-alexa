@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "zip-skill": "zip libra-alexa.zip -X -r skill/* -x skill/config/* -x skill/config/slot-types/*",
     "deploy-skill": "",
     "lint": "eslint . --ext .js",
     "bundle": "browserify index.js > bundle.js",

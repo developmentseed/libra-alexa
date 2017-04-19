@@ -24,8 +24,6 @@ io.on('connection', function (socket) {
 
 app.get('/auth', (req, res) => {
   const query = qs.stringify(req.query);
-  console.log('req.query', req.query);
-
   res.redirect(301, `/?${query}`);
 });
 
@@ -52,7 +50,6 @@ function getm3u (url, callback) {
   const urls = [];
 
   request(url, function (err, res, body) {
-    console.log('body', body)
     if (err) return callback(err);
     if (body) urls.push(body);
     callback(null, urls);

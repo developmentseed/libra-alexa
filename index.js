@@ -18,7 +18,6 @@ io.on('connect', function () {});
 io.on('disconnect', function () {});
 
 io.on('session-data', function (data) {
-  console.log('session-data', data);
   mic.className = micResponding;
   var bg = 'url(' + data.image.thumbnail + ')';
   var container = document.querySelector('.content');
