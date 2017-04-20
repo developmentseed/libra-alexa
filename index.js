@@ -33,13 +33,14 @@ io.on('session-data', function (data) {
   var bg = 'url(' + data.image_url + ')';
   var container = document.querySelector('.content');
   container.style.backgroundImage = bg;
+
   console.log('loading image')
   preloadImage(data.image_url, function () {
     console.log('finished loading image')
+    elementClass(recordButton).add('hidden');
+    elementClass(header).add('revealed');
+    updateImageInfoView(data);
   });
-  elementClass(recordButton).add('hidden');
-  elementClass(header).add('revealed');
-  updateImageInfoView(data);
 });
 
 function preloadImage (src, callback) {
