@@ -136,7 +136,7 @@ function getImageResponse (intentRequest, session, callback) {
       apiUrl += '&satellite_name=landsat';
     }
 
-    var tilerUrl = 'https://libra.developmentseed.org/alexa-live/image/';
+    var tilerUrl = 'https://alexa.developmentseed.org/live/image/';
 
     requestImage(apiUrl, function (err, body) {
       options = {
