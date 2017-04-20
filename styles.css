@@ -11,10 +11,18 @@ ul {
   margin: 0;
   padding: 0; }
 
+#notifications {
+  position: fixed;
+  text-align: center;
+  width: 100%;
+  left: 0;
+  color: #fff;
+  bottom: 100px; }
+
 .content {
   flex: 1;
   background-image: radial-gradient(circle, #292929, #000);
-  background-size: 100%;
+  background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
   height: 100%; }
@@ -46,7 +54,7 @@ ul {
   margin: auto;
   max-width: 100%;
   max-height: 100%;
-  overflow: auto;
+  overflow: hidden;
   box-shadow: 0px 1px 31px 5px #4AE2D6;
   opacity: 1;
   transition: opacity 0.24s ease 0s;

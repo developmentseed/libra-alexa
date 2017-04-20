@@ -92,8 +92,6 @@ function getImageResponse (intentRequest, session, callback) {
     const lat = sessionAttributes.city.lat;
     var apiUrl = `https://api.developmentseed.org/satellites/?contains=${lon},${lat}&limit=1`;
 
-    output = 'Here\'s what I\'ve got for ' + sessionAttributes.city.name;
-
     if (slots.CloudPercentage.value) {
       const clouds = parseInt(slots.CloudPercentage.value);
       const cloudsMin = clouds - 5;
@@ -148,16 +146,18 @@ function getImageResponse (intentRequest, session, callback) {
       if (err || !body.results || !body.results.length) {
         sendErrorResponse(options, sessionAttributes, callback);
       } else {
-        const response = buildSpeechletResponse(options);
         const results = body.results[0];
         sessionAttributes.image = results;
+        sessionAttributes.tileType = ''
 
         if (slots.HighResolutionImagery.value) {
           sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&resolution=2`;
         } else if (slots.LandWaterAnalysis.value) {
           sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&product=water&resolution=2`;
+          sessionAttributes.tileType = 'land water analysis';
         } else if (slots.VegetationHealth.value) {
           sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&product=ndvi&resolution=2`;
+          sessionAttributes.tileType = 'NDVI';
         } else {
           sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&resolution=2`;
         }
@@ -166,6 +166,9 @@ function getImageResponse (intentRequest, session, callback) {
         console.log('sessionAttributes', sessionAttributes);
 
         sessionAttributes.requestId = intentRequest.requestId;
+        options.output = `I\'ve got ${sessionAttributes.tileType} images for ${sessionAttributes.city.name}. Processing the image now`;
+        const response = buildSpeechletResponse(options);
+
         sendDataToApp('session-data', sessionAttributes, function (err, res, body) {
           if (err) console.log(err);
           callback(sessionAttributes, response);
@@ -194,7 +197,7 @@ function sendDataToApp (type, data, callback) {
 }
 
 function sendErrorResponse (options, sessionAttributes, callback) {
-  options.output = 'I\'m sorry, I didn\'t find any matching images';
+  options.output = 'I\'m sorry, I didn\'t find any matching images for ' + sessionAttributes.city.name;
   const response = buildSpeechletResponse(options);
   callback(sessionAttributes, response);
 }

@@ -6,6 +6,7 @@ var Alexa = require('./alexa');
 var io = socket(`https://${window.location.host}/`);
 
 var mic = document.querySelector('.microphone__background');
+var notifications = document.getElementById('notifications');
 var micListening = 'microphone__background microphone--listening';
 var micReceiving = 'microphone__background microphone--receiving';
 var micResponding = 'microphone__background microphone--responding';
@@ -13,6 +14,7 @@ var micResponding = 'microphone__background microphone--responding';
 var header = document.querySelector('.content__header');
 
 updatePageContentView();
+updateNotificationsView('Hold the spacebar to search for a satellite image of a location.');
 
 io.on('connect', function () {
   console.log('connected');
@@ -33,13 +35,15 @@ io.on('session-data', function (data) {
   var bg = 'url(' + data.image_url + ')';
   var container = document.querySelector('.content');
   container.style.backgroundImage = bg;
+  updateImageInfoView(data);
+  updateNotificationsView('Processing the image now.');
 
-  console.log('loading image')
+  console.log('loading image');
   preloadImage(data.image_url, function () {
     console.log('finished loading image')
     elementClass(recordButton).add('hidden');
     elementClass(header).add('revealed');
-    updateImageInfoView(data);
+    updateNotificationsView('');
   });
 });
 
@@ -105,7 +109,7 @@ function updateImageInfoView (data) {
 
 function imageInfoView (data) {
   return html`<div class='image__info'>
-    <h2 class='image__title'>${data.city.name}, ${data.city.country}</h2>
+    <h2 class='image__title'>${data.city.name}, ${data.city.adminCode} ${data.city.country}</h2>
     <ul class='image__meta'>
       <li class='image__meta--item'>${data.image.date}</li>
       <li class='image__meta--item'>${data.image.satellite_name}</li>
@@ -129,4 +133,14 @@ function pageContentView () {
       <button class='button button--login' id="login">Log in</button>
     </div>`;
   }
+}
+
+function notificationsView (msg) {
+  return html`<div id="notifications">
+    ${msg}
+  </div>`
+}
+
+function updateNotificationsView (msg) {
+  html.update(notifications, notificationsView(msg));
 }

@@ -19,6 +19,7 @@ GetImageIntent {ShowMe} {City} from {Date}
 GetImageIntent {ShowMe} {City} from {Date} with {NoClouds}
 GetImageIntent {ShowMe} {City} from {Date} with {CloudPercentage} percent clouds
 
+GetImageIntent {ShowMe} {City} with {NoClouds}
 GetImageIntent {ShowMe} {City} with {NoClouds} from {Date}
 GetImageIntent {ShowMe} {City} with {CloudPercentage} percent clouds from {Date}
 
@@ -28,9 +29,11 @@ GetImageIntent {ShowMe} {Latest} {NoClouds} {Image} over {City}
 GetImageIntent {ShowMe} {VegetationHealth} for {City}
 GetImageIntent {ShowMe} {VegetationHealth} of {City}
 GetImageIntent {ShowMe} {VegetationHealth} in {City}
+GetImageIntent {ShowMe} {VegetationHealth} over {City}
 GetImageIntent {ShowMe} {VegetationHealth} for {City} from {Date}
 GetImageIntent {ShowMe} {VegetationHealth} of {City} from {Date}
 GetImageIntent {ShowMe} {VegetationHealth} in {City} from {Date}
+GetImageIntent {ShowMe} {VegetationHealth} over {City} from {Date}
 
 GetImageIntent {ShowMe} {Latest} {VegetationHealth} for {City}
 GetImageIntent {ShowMe} {Latest} {VegetationHealth} for {City} from {Date}
@@ -38,8 +41,13 @@ GetImageIntent {ShowMe} {Latest} {VegetationHealth} for {City} from {Date}
 GetImageIntent {ShowMe} {LandWaterAnalysis} in {City}
 GetImageIntent {ShowMe} {LandWaterAnalysis} for {City}
 GetImageIntent {ShowMe} {LandWaterAnalysis} of {City}
+GetImageIntent {ShowMe} {LandWaterAnalysis} over {City}
 GetImageIntent {ShowMe} {LandWaterAnalysis} in {City} from {Date}
 GetImageIntent {ShowMe} {LandWaterAnalysis} for {City} from {Date}
 GetImageIntent {ShowMe} {LandWaterAnalysis} of {City} from {Date}
+GetImageIntent {ShowMe} {LandWaterAnalysis} over {City} from {Date}
 
 GetImageIntent {ShowMe} {HighResolutionImagery} of {City}
+GetImageIntent {ShowMe} {HighResolutionImagery} in {City}
+GetImageIntent {ShowMe} {HighResolutionImagery} over {City}
+GetImageIntent {ShowMe} {HighResolutionImagery} for {City}
