@@ -62,7 +62,8 @@ function getWelcomeResponse (callback) {
   callback(sessionAttributes, response);
 }
 
-function getImageResponse (intent, session, callback) {
+function getImageResponse (intentRequest, session, callback) {
+  const intent = intentRequest.intent;
   const slots = intent.slots;
   const sessionAttributes = {};
   let options = {};
@@ -135,7 +136,7 @@ function getImageResponse (intent, session, callback) {
       apiUrl += '&satellite_name=landsat';
     }
 
-    var tilerUrl = 'https://6232ef15.ngrok.io/image/';
+    var tilerUrl = 'http://ec2-54-87-182-19.compute-1.amazonaws.com/image/';
 
     requestImage(apiUrl, function (err, body) {
       options = {
@@ -164,6 +165,7 @@ function getImageResponse (intent, session, callback) {
         sessionAttributes.image = body.results[0];
         console.log('sessionAttributes', sessionAttributes);
 
+        sessionAttributes.requestId =
         sendDataToApp('session-data', sessionAttributes, function (err, res, body) {
           if (err) console.log(err);
           callback(sessionAttributes, response);
@@ -240,7 +242,7 @@ function onIntent (intentRequest, session, callback) {
   // Dispatch to your skill's intent handlers
   console.log('intentName', intentName);
   if (intentName === 'GetImageIntent') {
-    getImageResponse(intent, session, callback);
+    getImageResponse(intentRequest, session, callback);
   } else if (intentName === 'AMAZON.HelpIntent') {
     getWelcomeResponse(callback);
   } else if (intentName === 'AMAZON.StopIntent' || intentName === 'AMAZON.CancelIntent') {

@@ -25,6 +25,7 @@ io.on('disconnect', function () {
 
 io.on('request-data', function (data) {
   console.log('request-data', data);
+  io.emit('join', data);
 });
 
 io.on('session-data', function (data) {

@@ -20,9 +20,9 @@ app.use(bodyParser.json());
 app.use('/', express.static(__dirname));
 
 io.on('connection', function (socket) {
-  socket.on('join', function (id) {
-    console.log('join id', id);
-    users[id] = id;
+  console.log('socket', socket.id)
+  socket.on('join', function (requestData) {
+    socket.join(requestData.id);
   });
 });
 
@@ -31,13 +31,13 @@ app.get('/auth', (req, res) => {
   res.redirect(301, `/?${query}`);
 });
 
-app.post('/session-data', (req, res) => {
-  io.emit('session-data', req.body);
-  res.status(200).send('');
-});
+// app.post('/session-data', (req, res) => {
+//   io.emit('session-data', req.body);
+//   res.status(200).send('');
+// });
 
 app.post('/progress', (req, res) => {
-  io.emit(req.query.type, req.body);
+  io.broadcast.to(req.body.requestId).emit(req.query.type, req.body);
   res.status(200).send('');
 });
 
