@@ -10,6 +10,9 @@ const getDate = require('./get-date');
 */
 
 exports.handler = (event, context, callback) => {
+  console.log('event', event)
+  console.log('context', context)
+
   try {
     // only our alexa skill can use this lambda function
     if (event.session.application.applicationId !== 'amzn1.ask.skill.2db74e71-0785-46a9-9504-4d062ed4eb33') {
@@ -130,7 +133,7 @@ function getImageResponse (intent, session, callback) {
       apiUrl += '&satellite_name=landsat';
     }
 
-    var tilerUrl = `https://379d7b6e.ngrok.io/image/`;
+    var tilerUrl = 'https://6232ef15.ngrok.io/image/';
 
     requestImage(apiUrl, function (err, body) {
       options = {
@@ -147,16 +150,16 @@ function getImageResponse (intent, session, callback) {
         sessionAttributes.image = results;
 
         if (slots.HighResolutionImagery.value) {
-          sessionAttributes.image_url = tilerUrl + results.scene_id;
+          sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&resolution=2`;
         } else if (slots.LandWaterAnalysis.value) {
-          sessionAttributes.image_url = tilerUrl + results.scene_id + '?product=water&resolution=2';
+          sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&product=water&resolution=2`;
         } else if (slots.VegetationHealth.value) {
-          sessionAttributes.image_url = tilerUrl + results.scene_id + '?product=ndvi&resolution=2';
+          sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&product=ndvi&resolution=2`;
         } else {
-          sessionAttributes.image_url = results.thumbnail;
-          sessionAttributes.image = body.results[0];
+          sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&resolution=2`;
         }
 
+        sessionAttributes.image = body.results[0];
         console.log('sessionAttributes', sessionAttributes);
 
         sendDataToApp(sessionAttributes, function (err, res, body) {

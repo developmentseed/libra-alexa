@@ -12,6 +12,7 @@ const app = express();
 
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var users = {}
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -19,7 +20,10 @@ app.use(bodyParser.json());
 app.use('/', express.static(__dirname));
 
 io.on('connection', function (socket) {
-  socket.emit('hi', { hello: 'world' });
+  socket.on('join', function (id) {
+    console.log('join id', id);
+    users[id] = id;
+  });
 });
 
 app.get('/auth', (req, res) => {

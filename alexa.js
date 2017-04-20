@@ -50,6 +50,9 @@ module.exports = function alexaVoiceService (options) {
   function sendAudio (dataView) {
     alexa.sendAudio(dataView)
       .then(({ xhr, response }) => {
+        console.log('dataView', dataView)
+        console.log('response', response)
+
         if (!response.multipart.length) return console.error('empty');
         let directives;
         const audioResponses = {};
@@ -74,7 +77,7 @@ module.exports = function alexaVoiceService (options) {
             const end = multipart.meta.body.byteOffset.end;
             const contentId = multipart.headers['Content-ID'];
 
-            var slicedBody = xhr.response.slice(start, end);
+            const slicedBody = xhr.response.slice(start, end);
             audioResponses[contentId] = slicedBody;
           }
         });
