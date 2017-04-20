@@ -2,17 +2,25 @@ GetImageIntent {ShowMe} {City}
 GetImageIntent {ShowMe} {Image} of {City}
 GetImageIntent {ShowMe} {Image} of {City} with {NoClouds}
 GetImageIntent {ShowMe} {Image} of {City} with {CloudPercentage} percent clouds
+
 GetImageIntent {ShowMe} {Latest} {Image} of {City} with {NoClouds}
 GetImageIntent {ShowMe} {Latest} {Image} of {City} with {CloudPercentage} percent clouds
+
 GetImageIntent {ShowMe} {Image} for {City}
 GetImageIntent {ShowMe} {Image} for {City} with {NoClouds}
 GetImageIntent {ShowMe} {Image} for {City} with {CloudPercentage} percent clouds
+
 GetImageIntent {ShowMe} {Latest} {Image} for {City} with {NoClouds}
 GetImageIntent {ShowMe} {Latest} {Image} for {City} with {CloudPercentage} percent clouds
+
 GetImageIntent {ShowMe} {City} with {CloudPercentage} percent clouds
+
 GetImageIntent {ShowMe} {City} from {Date}
 GetImageIntent {ShowMe} {City} from {Date} with {NoClouds}
 GetImageIntent {ShowMe} {City} from {Date} with {CloudPercentage} percent clouds
+
+GetImageIntent {ShowMe} {City} with {NoClouds} from {Date}
+GetImageIntent {ShowMe} {City} with {CloudPercentage} percent clouds from {Date}
 
 GetImageIntent {ShowMe} {NoClouds} {Image} over {City}
 GetImageIntent {ShowMe} {Latest} {NoClouds} {Image} over {City}

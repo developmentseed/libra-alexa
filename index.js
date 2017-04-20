@@ -25,7 +25,7 @@ io.on('disconnect', function () {
 io.on('session-data', function (data) {
   console.log('session-data')
   mic.className = micResponding;
-  var bg = 'url(' + data.image.thumbnail + ')';
+  var bg = 'url(' + data.image_url + ')';
   var container = document.querySelector('.content');
   container.style.backgroundImage = bg;
   console.log('container', container, bg)

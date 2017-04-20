@@ -96,9 +96,10 @@ function getImageResponse (intent, session, callback) {
     }
 
     if (slots.Date.value) {
-      const dateChunks = slots.Date.value.split('-');
       const date = getDate(slots.Date.value)
       let dateFragment = '';
+
+      console.log('date', slots.Date.value, date)
 
       if (date.onlyYear) {
         dateFragment += `&date_from=${date.year}-01-01&date_to=${date.year}-12-31`;
@@ -114,25 +115,21 @@ function getImageResponse (intent, session, callback) {
       apiUrl += dateFragment;
     }
 
-    if (slots.Latest.value) {
-
-    }
-
-    if (slots.HighResolutionImagery.value) {
-
-    }
-
-    if (slots.LandWaterAnalysis.value) {
-
-    }
-
-    if (slots.VegetationHealth.value) {
-
-    }
-
     console.log('slots', slots);
     console.log('sessionAttributes.city', sessionAttributes.city);
     console.log('apiUrl', apiUrl);
+
+    if (slots.HighResolutionImagery.value) {
+      apiUrl += '&satellite_name=sentinel'
+    } else if (slots.LandWaterAnalysis.value) {
+      apiUrl += '&satellite_name=landsat'
+    } else if (slots.VegetationHealth.value) {
+      apiUrl += '&satellite_name=landsat'
+    } else {
+      sessionAttributes.image = body.results[0]
+    }
+
+    var tilerUrl = `https://379d7b6e.ngrok.io/image/`
 
     requestImage(apiUrl, function (err, body) {
       options = {
@@ -142,12 +139,23 @@ function getImageResponse (intent, session, callback) {
       };
 
       if (err || !body.results || !body.results.length) {
-        sendErrorResponse(options, sessionAttributes, callback)
+        sendErrorResponse(options, sessionAttributes, callback);
       } else {
         const response = buildSpeechletResponse(options);
+        const results = body.results[0];
+        sessionAttributes.image = results;
 
-        sessionAttributes.image = body.results[0]
-        console.log('sessionAttributes', sessionAttributes)
+        if (slots.HighResolutionImagery.value) {
+          sessionAttributes.image_url = tilerUrl + results.scene_id;
+        } else if (slots.LandWaterAnalysis.value) {
+          sessionAttributes.image_url = tilerUrl + results.scene_id + '?product=water';
+        } else if (slots.VegetationHealth.value) {
+          sessionAttributes.image_url = tilerUrl + results.scene_id + '?product=ndvi';
+        } else {
+          sessionAttributes.image_url = results.thumbnail;
+        }
+
+        console.log('sessionAttributes', sessionAttributes);
 
         sendDataToApp(sessionAttributes, function (err, res, body) {
           if (err) console.log(err)

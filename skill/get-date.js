@@ -8,6 +8,11 @@ module.exports = getDate
 
 function getDate (date) {
   const dateChunks = date.split('-');
+
+  var hasYear = !!dateChunks[0]
+  var hasMonth = !!dateChunks[1]
+  var hasDay = !!dateChunks[2]
+
   var year = getYear(date);
   var month = format(date, 'MM');
   var day = getDay(date);
@@ -18,24 +23,20 @@ function getDate (date) {
   var textDay = format(date, 'Do');
   var textLastDay = format(getLastDay(date), 'Do');
 
-  var hasYear = !!dateChunks[0]
-  var hasMonth = !!dateChunks[1]
-  var hasDay = !!dateChunks[2]
-
   return {
     hasYear: hasYear,
     hasMonth: hasMonth,
     hasDay: hasDay,
     onlyYear: hasYear && !hasMonth && !hasDay,
     year: year,
-    month: month === 0 ? null : month,
-    day: month === 0 ? null : day,
-    lastDayOfMonth: month === 0 ? null : lastDay,
+    month: hasMonth ? null : month,
+    day: hasDay ? null : day,
+    lastDayOfMonth: hasMonth ? null : lastDay,
     text: {
       year: textYear,
-      month: month === 0 ? null : textMonth,
-      day: month === 0 ? null : textDay,
-      lastDayOfMonth: month === 0 ? null : textLastDay
+      month: hasMonth ? null : textMonth,
+      day: hasDay ? null : textDay,
+      lastDayOfMonth: hasMonth ? null : textLastDay
     }
   };
 }
