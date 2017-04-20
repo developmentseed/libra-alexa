@@ -1,6 +1,8 @@
 const cities = require('all-the-cities')
 const request = require('request')
 
+const getDate = require('./get-date')
+
 /*
 *
 * MAIN FUNCTION
@@ -9,8 +11,6 @@ const request = require('request')
 
 exports.handler = (event, context, callback) => {
   try {
-    console.log(`event.session.application.applicationId=${event.session.application.applicationId}`);
-
     // only our alexa skill can use this lambda function
     if (event.session.application.applicationId !== 'amzn1.ask.skill.2db74e71-0785-46a9-9504-4d062ed4eb33') {
       callback('Invalid Application ID');
@@ -61,51 +61,109 @@ function getImageResponse (intent, session, callback) {
   const slots = intent.slots
   const sessionAttributes = {};
   let options = {}
+  let output = ''
 
   console.log('intent', intent)
   console.log('session', session)
 
-  if (slots.EuropeCity.value) {
-    sessionAttributes.city = slots.EuropeCity.value
+  if (slots.City.value) {
+    sessionAttributes.city = slots.City.value
 
     sessionAttributes.city = cities.filter(city => {
       return city.name === sessionAttributes.city;
-    })[0]
+    })[0];
+
+    // return early if not found
+    if (!sessionAttributes.city) {
+      return sendErrorResponse(options, sessionAttributes, callback);
+    }
 
     const lon = sessionAttributes.city.lon
     const lat = sessionAttributes.city.lat
     var apiUrl = `https://api.developmentseed.org/satellites/?contains=${lon},${lat}&limit=1`
+
+    output = 'Here\'s what I\'ve got for ' + sessionAttributes.city.name
 
     if (slots.CloudPercentage.value) {
       const clouds = parseInt(slots.CloudPercentage.value);
       const cloudsMin = clouds - 5;
       const cloudsMax = clouds + 5;
       apiUrl += `&cloud_from=${cloudsMin}&cloud_to=${cloudsMax}`;
+      output += ' with ' + clouds + ' percent clouds'
+    } else if (slots.NoClouds.value) {
+      apiUrl += `&cloud_from=0&cloud_to=10`;
+      output += ' with no clouds';
     }
 
-    console.log('sessionAttributes.city', sessionAttributes.city)
+    if (slots.Date.value) {
+      const dateChunks = slots.Date.value.split('-');
+      const date = getDate(slots.Date.value)
+      let dateFragment = '';
 
-    console.log('apiUrl', apiUrl)
-    request(apiUrl, function (err, res, body) {
-      body = JSON.parse(body)
-      console.log('satutils response', body)
-
-      options = {
-        title: sessionAttributes.city + ' Satellite Images',
-        output: 'Here\'s what I\'ve got for ' + sessionAttributes.city.name,
-        endSession: false
+      if (date.onlyYear) {
+        dateFragment += `&date_from=${date.year}-01-01&date_to=${date.year}-12-31`;
+        output += ` from ${date.text.month}`
+      } else if (date.hasMonth && !date.hasDay) {
+        dateFragment += `&date_from=${date.year}-${date.month}-01&date_to=${date.year}-${date.month}-${date.lastDayOfMonth}`;
+        output += ` from ${date.text.month} ${date.text.year}`
+      } else if (date.hasDay) {
+        dateFragment += `&date_from=${date.year}-${date.month}-${date.day}&date_to=${date.year}-${date.month}-${date.day}`;
+        output += ` from ${date.text.month} ${date.text.day} ${date.text.year}`
       }
 
-      const response = buildSpeechletResponse(options);
-      console.log('response', response)
-      sessionAttributes.image = body.results[0]
-      console.log('sessionAttributes', sessionAttributes)
-      sendDataToApp(sessionAttributes, function (err, res, body) {
-        if (err) console.log(err)
-        callback(sessionAttributes, response);
-      });
+      apiUrl += dateFragment;
+    }
+
+    if (slots.Latest.value) {
+
+    }
+
+    if (slots.HighResolutionImagery.value) {
+
+    }
+
+    if (slots.LandWaterAnalysis.value) {
+
+    }
+
+    if (slots.VegetationHealth.value) {
+
+    }
+
+    console.log('slots', slots);
+    console.log('sessionAttributes.city', sessionAttributes.city);
+    console.log('apiUrl', apiUrl);
+
+    requestImage(apiUrl, function (err, body) {
+      options = {
+        title: sessionAttributes.city + ' Satellite Images',
+        output: output,
+        endSession: false
+      };
+
+      if (err || !body.results || !body.results.length) {
+        sendErrorResponse(options, sessionAttributes, callback)
+      } else {
+        const response = buildSpeechletResponse(options);
+
+        sessionAttributes.image = body.results[0]
+        console.log('sessionAttributes', sessionAttributes)
+
+        sendDataToApp(sessionAttributes, function (err, res, body) {
+          if (err) console.log(err)
+          callback(sessionAttributes, response);
+        });
+      }
     });
   }
+}
+
+function requestImage (apiUrl, callback) {
+  request(apiUrl, function (err, res, body) {
+    if (err) return callback(err);
+    body = JSON.parse(body);
+    callback(null, body);
+  });
 }
 
 function sendDataToApp (data, callback) {
@@ -113,8 +171,15 @@ function sendDataToApp (data, callback) {
     method: 'POST',
     url: 'https://arcane-chamber-39897.herokuapp.com',
     json: data
-  }
-  request(options, callback)
+  };
+
+  request(options, callback);
+}
+
+function sendErrorResponse (options, sessionAttributes, callback) {
+  options.output = 'I\'m sorry, I didn\'t find any matching images'
+  const response = buildSpeechletResponse(options);
+  callback(sessionAttributes, response);
 }
 
 function endSessionResponse (callback) {
@@ -122,7 +187,7 @@ function endSessionResponse (callback) {
     cardTitle: 'Finished with satellites',
     speechOutput: 'Thanks for looking at earth',
     endSession: true
-  }
+  };
 
   const response = buildSpeechletResponse(options);
   callback({}, response);

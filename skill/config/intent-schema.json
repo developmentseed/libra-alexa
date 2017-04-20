@@ -8,12 +8,40 @@
           "type": "CLOUD_PERCENTAGE"
         },
         {
-          "name": "ImageSynonym",
+          "name": "HighResolutionImagery",
+          "type": "HIGH_RESOLUTION_IMAGERY"
+        },
+        {
+          "name": "Image",
           "type": "IMAGE_SYNONYM"
         },
         {
-          "name": "EuropeCity",
-          "type": "AMAZON.EUROPE_CITY"
+          "name": "LandWaterAnalysis",
+          "type": "LAND_WATER_ANALYSIS"
+        },
+        {
+          "name": "Latest",
+          "type": "LATEST"
+        },
+        {
+          "name": "NoClouds",
+          "type": "NO_CLOUDS"
+        },
+        {
+          "name": "ShowMe",
+          "type": "SHOW_ME"
+        },
+        {
+          "name": "VegetationHealth",
+          "type": "VEGETATION_HEALTH"
+        },
+        {
+          "name": "City",
+          "type": "AMAZON.US_CITY"
+        },
+        {
+          "name": "Date",
+          "type": "AMAZON.DATE"
         }
       ]
     },
