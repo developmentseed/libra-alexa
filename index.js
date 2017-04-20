@@ -54,6 +54,7 @@ function preloadImage (src, callback) {
 }
 
 var loginButton = document.getElementById('login');
+var logoutButton = document.getElementById('logout');
 var recordButton = document.getElementById('record');
 
 var alexa = Alexa({
@@ -67,6 +68,10 @@ alexa.start();
 
 if (loginButton) {
   loginButton.addEventListener('click', alexa.login);
+}
+
+if (logoutButton) {
+
 }
 
 recordButton.addEventListener('mousedown', startRecording);
@@ -122,7 +127,15 @@ function pageContentView () {
   var token = localStorage.getItem('libra-alexa-token');
 
   if (token) {
+    function onclickLogout () {
+      localStorage.removeItem('libra-alexa-token');
+      updatePageContentView();
+    }
+
     return html`<div class='page__content'>
+      <div class='page__content'>
+        <button class='button button--logout' onclick=${onclickLogout} id="logout">Log out</button>
+      </div>
       <div class="microphone__background--images hidden">
         <div class='microphone__icon'>
           <img src="/graphics/microphone.svg" alt="microphone" height="25" width="25">
