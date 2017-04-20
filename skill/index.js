@@ -1,7 +1,7 @@
-const cities = require('all-the-cities')
-const request = require('request')
+const cities = require('all-the-cities');
+const request = require('request');
 
-const getDate = require('./get-date')
+const getDate = require('./get-date');
 
 /*
 *
@@ -13,7 +13,7 @@ exports.handler = (event, context, callback) => {
   try {
     // only our alexa skill can use this lambda function
     if (event.session.application.applicationId !== 'amzn1.ask.skill.2db74e71-0785-46a9-9504-4d062ed4eb33') {
-      callback('Invalid Application ID');
+      callback(new Error('Invalid Application ID'));
     }
 
     if (event.session.new) {
@@ -51,27 +51,27 @@ function getWelcomeResponse (callback) {
     output: 'Ask me about a location to look at some satellite images!',
     repromptText: 'Ask me about a specific location',
     endSession: false
-  }
+  };
 
   const response = buildSpeechletResponse(options);
   callback(sessionAttributes, response);
 }
 
 function getImageResponse (intent, session, callback) {
-  const slots = intent.slots
+  const slots = intent.slots;
   const sessionAttributes = {};
-  let options = {}
-  let output = ''
+  let options = {};
+  let output = '';
 
-  console.log('intent', intent)
-  console.log('session', session)
+  console.log('intent', intent);
+  console.log('session', session);
 
   if (slots.City.value) {
     if (slots.City.value === 'Florence') {
-      slots.City.value === 'Firenze'
+      slots.City.value = 'Firenze';
     }
 
-    sessionAttributes.city = slots.City.value
+    sessionAttributes.city = slots.City.value;
 
     sessionAttributes.city = cities.filter(city => {
       return city.name === sessionAttributes.city;
@@ -82,41 +82,40 @@ function getImageResponse (intent, session, callback) {
       return sendErrorResponse(options, sessionAttributes, callback);
     }
 
-    const lon = sessionAttributes.city.lon
-    const lat = sessionAttributes.city.lat
-    var apiUrl = `https://api.developmentseed.org/satellites/?contains=${lon},${lat}&limit=1`
+    const lon = sessionAttributes.city.lon;
+    const lat = sessionAttributes.city.lat;
+    var apiUrl = `https://api.developmentseed.org/satellites/?contains=${lon},${lat}&limit=1`;
 
-    output = 'Here\'s what I\'ve got for ' + sessionAttributes.city.name
+    output = 'Here\'s what I\'ve got for ' + sessionAttributes.city.name;
 
     if (slots.CloudPercentage.value) {
       const clouds = parseInt(slots.CloudPercentage.value);
       const cloudsMin = clouds - 5;
       const cloudsMax = clouds + 5;
       apiUrl += `&cloud_from=${cloudsMin}&cloud_to=${cloudsMax}`;
-      output += ' with ' + clouds + ' percent clouds'
-    } else {
-      apiUrl += `&cloud_from=0&cloud_to=10`;
+      output += ' with ' + clouds + ' percent clouds';
+    } else if (slots.NoClouds.value) {
+      apiUrl += '&cloud_from=0&cloud_to=10';
       output += ' with no clouds';
+    } else {
+      apiUrl += '&cloud_from=0&cloud_to=10';
     }
 
     if (slots.Date.value) {
-      const date = getDate(slots.Date.value)
-      let dateFragment = '';
-
-      console.log('date', slots.Date.value, date)
-
-      if (date.onlyYear) {
-        dateFragment += `&date_from=${date.year}-01-01&date_to=${date.year}-12-31`;
-        output += ` from ${date.text.month}`
-      } else if (date.hasMonth && !date.hasDay) {
-        dateFragment += `&date_from=${date.year}-${date.month}-01&date_to=${date.year}-${date.month}-${date.lastDayOfMonth}`;
-        output += ` from ${date.text.month} ${date.text.year}`
-      } else if (date.hasDay) {
-        dateFragment += `&date_from=${date.year}-${date.month}-${date.day}&date_to=${date.year}-${date.month}-${date.day}`;
-        output += ` from ${date.text.month} ${date.text.day} ${date.text.year}`
-      }
-
-      apiUrl += '&date_from=2016-10-01&date_to=2017-02-01';
+      const date = getDate(slots.Date.value);
+      console.log('date', slots.Date.value, date);
+      // let dateFragment;
+      // if (date.onlyYear) {
+      //   dateFragment += `&date_from=${date.year}-01-01&date_to=${date.year}-12-31`;
+      //   output += ` from ${date.text.month}`
+      // } else if (date.hasMonth && !date.hasDay) {
+      //   dateFragment += `&date_from=${date.year}-${date.month}-01&date_to=${date.year}-${date.month}-${date.lastDayOfMonth}`;
+      //   output += ` from ${date.text.month} ${date.text.year}`
+      // } else if (date.hasDay) {
+      //   dateFragment += `&date_from=${date.year}-${date.month}-${date.day}&date_to=${date.year}-${date.month}-${date.day}`;
+      //   output += ` from ${date.text.month} ${date.text.day} ${date.text.year}`
+      // }
+      // apiUrl += '&date_from=2016-10-01&date_to=2017-02-01';
     }
 
     apiUrl += '&date_from=2016-10-01&date_to=2017-02-01';
@@ -124,17 +123,14 @@ function getImageResponse (intent, session, callback) {
     console.log('sessionAttributes.city', sessionAttributes.city);
     console.log('apiUrl', apiUrl);
 
+    // only use sentinal for the high-res imagery for now
     if (slots.HighResolutionImagery.value) {
-      apiUrl += '&satellite_name=sentinel'
-    } else if (slots.LandWaterAnalysis.value) {
-      apiUrl += '&satellite_name=landsat'
-    } else if (slots.VegetationHealth.value) {
-      apiUrl += '&satellite_name=landsat'
+      apiUrl += '&satellite_name=sentinel';
     } else {
-      sessionAttributes.image = body.results[0]
+      apiUrl += '&satellite_name=landsat';
     }
 
-    var tilerUrl = `https://379d7b6e.ngrok.io/image/`
+    var tilerUrl = `https://379d7b6e.ngrok.io/image/`;
 
     requestImage(apiUrl, function (err, body) {
       options = {
@@ -158,12 +154,13 @@ function getImageResponse (intent, session, callback) {
           sessionAttributes.image_url = tilerUrl + results.scene_id + '?product=ndvi&resolution=2';
         } else {
           sessionAttributes.image_url = results.thumbnail;
+          sessionAttributes.image = body.results[0];
         }
 
         console.log('sessionAttributes', sessionAttributes);
 
         sendDataToApp(sessionAttributes, function (err, res, body) {
-          if (err) console.log(err)
+          if (err) console.log(err);
           callback(sessionAttributes, response);
         });
       }
@@ -190,12 +187,17 @@ function sendDataToApp (data, callback) {
 }
 
 function sendErrorResponse (options, sessionAttributes, callback) {
-  options.output = 'I\'m sorry, I didn\'t find any matching images'
+  options.output = 'I\'m sorry, I didn\'t find any matching images';
   const response = buildSpeechletResponse(options);
   callback(sessionAttributes, response);
 }
 
-function endSessionResponse (callback) {
+function endSessionResponse (sessionAttributes, callback) {
+  if (typeof sessionAttributes === 'function') {
+    callback = sessionAttributes;
+    sessionAttributes = {};
+  }
+
   const options = {
     cardTitle: 'Finished with satellites',
     speechOutput: 'Thanks for looking at earth',
@@ -203,7 +205,7 @@ function endSessionResponse (callback) {
   };
 
   const response = buildSpeechletResponse(options);
-  callback({}, response);
+  callback(sessionAttributes, response);
 }
 
 /*
@@ -225,13 +227,13 @@ function onLaunch (launchRequest, session, callback) {
 
 function onIntent (intentRequest, session, callback) {
   console.log(`onIntent requestId=${intentRequest.requestId}, sessionId=${session.sessionId}`);
+  console.log('intentRequest', intentRequest);
 
-  console.log('intentRequest', intentRequest)
   const intent = intentRequest.intent;
   const intentName = intentRequest.intent.name;
 
   // Dispatch to your skill's intent handlers
-  console.log('intentName', intentName)
+  console.log('intentName', intentName);
   if (intentName === 'GetImageIntent') {
     getImageResponse(intent, session, callback);
   } else if (intentName === 'AMAZON.HelpIntent') {
@@ -258,18 +260,18 @@ function buildSpeechletResponse (options) {
   return {
     outputSpeech: {
       type: 'PlainText',
-      text: options.output,
+      text: options.output
     },
     card: {
       type: 'Simple',
       title: `SessionSpeechlet - ${options.title}`,
-      content: `SessionSpeechlet - ${options.output}`,
+      content: `SessionSpeechlet - ${options.output}`
     },
     reprompt: {
       outputSpeech: {
         type: 'PlainText',
-        text: options.repromptText,
-      },
+        text: options.repromptText
+      }
     },
     endSession: options.endSession
   };
