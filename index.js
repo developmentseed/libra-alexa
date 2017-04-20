@@ -36,7 +36,7 @@ io.on('session-data', function (data) {
   var container = document.querySelector('.content');
   container.style.backgroundImage = bg;
   updateImageInfoView(data);
-  updateNotificationsView('Processing the image now.');
+  updateNotificationsView('Processing the image now ...');
 
   console.log('loading image');
   preloadImage(data.image_url, function () {
@@ -86,6 +86,7 @@ document.addEventListener('keyup', function (e) {
     e.preventDefault();
     listening = false;
     stopRecording();
+    updateNotificationsView('Checking for that location ...');
   }
 });
 
