@@ -3,7 +3,7 @@ var elementClass = require('element-class');
 var html = require('yo-yo');
 var Alexa = require('./alexa');
 
-var io = socket(`https://${window.location.host}/alexa/`, { resource: 'alexa/socket.io' });
+var io = socket(`https://${window.location.host}/alexa/`, { path: '/alexa/socket.io' });
 
 var mic = document.querySelector('.microphone__background');
 var micListening = 'microphone__background microphone--listening';
