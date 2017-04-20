@@ -33,10 +33,20 @@ io.on('session-data', function (data) {
   var bg = 'url(' + data.image_url + ')';
   var container = document.querySelector('.content');
   container.style.backgroundImage = bg;
+  console.log('loading image')
+  preloadImage(data.image_url, function () {
+    console.log('finished loading image')
+  });
   elementClass(recordButton).add('hidden');
   elementClass(header).add('revealed');
   updateImageInfoView(data);
 });
+
+function preloadImage (src, callback) {
+  var img = new Image ();
+	img.onload = callback;
+  img.src = src;
+}
 
 var loginButton = document.getElementById('login');
 var recordButton = document.getElementById('record');

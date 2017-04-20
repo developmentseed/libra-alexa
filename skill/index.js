@@ -165,7 +165,7 @@ function getImageResponse (intentRequest, session, callback) {
         sessionAttributes.image = body.results[0];
         console.log('sessionAttributes', sessionAttributes);
 
-        sessionAttributes.requestId =
+        sessionAttributes.requestId = intentRequest.requestId;
         sendDataToApp('session-data', sessionAttributes, function (err, res, body) {
           if (err) console.log(err);
           callback(sessionAttributes, response);
