@@ -11,7 +11,7 @@ const upload = multer({ dest: uploadsDir });
 const app = express();
 
 var server = require('http').Server(app);
-var io = require('socket.io')(server, { path: '/alexa/socket.io' });
+var io = require('socket.io')(server, { path: '/socket.io' });
 var users = {}
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -27,7 +27,7 @@ io.on('connection', function (socket) {
   });
 });
 
-app.get('/alexa/auth', (req, res) => {
+app.get('/auth', (req, res) => {
   const query = qs.stringify(req.query);
   res.redirect(301, `/?${query}`);
 });
@@ -37,17 +37,17 @@ app.get('/alexa/auth', (req, res) => {
 //   res.status(200).send('');
 // });
 
-app.post('/alexa/progress', (req, res) => {
+app.post('/progress', (req, res) => {
   console.log('req.body', req.body)
   io.emit(req.query.type, req.body);
   res.status(200).send('');
 });
 
-app.post('/alexa/audio-request', upload.single('recording'), (req, res) => {
+app.post('/audio-request', upload.single('recording'), (req, res) => {
   res.json(req.file);
 });
 
-app.get('/alexa/audio-response', (req, res) => {
+app.get('/audio-response', (req, res) => {
   const url = req.query.url;
   if (!url) return res.json([]);
 

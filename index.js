@@ -3,7 +3,7 @@ var elementClass = require('element-class');
 var html = require('yo-yo');
 var Alexa = require('./alexa');
 
-var io = socket(`https://${window.location.host}/alexa/`, { path: '/alexa/socket.io' });
+var io = socket(`https://${window.location.host}/`);
 
 var mic = document.querySelector('.microphone__background');
 var micListening = 'microphone__background microphone--listening';
@@ -56,7 +56,7 @@ var alexa = Alexa({
   debug: true,
   deviceId: 'alexa_satellite',
   clientId: 'amzn1.application-oa2-client.f9b9e81dc82c445c995be4e25250f1db',
-  redirectUri: `https://${window.location.host}/alexa/auth`
+  redirectUri: `https://${window.location.host}/auth`
 });
 
 alexa.start();
@@ -120,7 +120,7 @@ function pageContentView () {
     return html`<div class='page__content'>
       <div class="microphone__background--images hidden">
         <div class='microphone__icon'>
-          <img src="/alexa/graphics/microphone.svg" alt="microphone" height="25" width="25">
+          <img src="/graphics/microphone.svg" alt="microphone" height="25" width="25">
         </div>
       </div>
     </div>`;

@@ -186,7 +186,7 @@ function requestImage (apiUrl, callback) {
 function sendDataToApp (type, data, callback) {
   var options = {
     method: 'POST',
-    url: 'https://libra.developmentseed.org/alexa/progress?type=' + type,
+    url: 'https://alexa.developmentseed.org/progress?type=' + type,
     json: data
   };
 
