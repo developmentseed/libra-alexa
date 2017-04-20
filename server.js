@@ -17,7 +17,7 @@ var users = {}
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use('/', express.static(__dirname));
+app.use('/alexa/', express.static(__dirname));
 
 io.on('connection', function (socket) {
   console.log('socket', socket.id)
@@ -27,7 +27,7 @@ io.on('connection', function (socket) {
   });
 });
 
-app.get('/auth', (req, res) => {
+app.get('/alexa/auth', (req, res) => {
   const query = qs.stringify(req.query);
   res.redirect(301, `/?${query}`);
 });
@@ -37,17 +37,17 @@ app.get('/auth', (req, res) => {
 //   res.status(200).send('');
 // });
 
-app.post('/progress', (req, res) => {
+app.post('/alexa/progress', (req, res) => {
   console.log('req.body', req.body)
   io.emit(req.query.type, req.body);
   res.status(200).send('');
 });
 
-app.post('/audio-request', upload.single('recording'), (req, res) => {
+app.post('/alexa/audio-request', upload.single('recording'), (req, res) => {
   res.json(req.file);
 });
 
-app.get('/audio-response', (req, res) => {
+app.get('/alexa/audio-response', (req, res) => {
   const url = req.query.url;
   if (!url) return res.json([]);
 
