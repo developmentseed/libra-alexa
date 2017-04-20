@@ -67,6 +67,10 @@ function getImageResponse (intent, session, callback) {
   console.log('session', session)
 
   if (slots.City.value) {
+    if (slots.City.value === 'Florence') {
+      slots.City.value === 'Firenze'
+    }
+
     sessionAttributes.city = slots.City.value
 
     sessionAttributes.city = cities.filter(city => {
@@ -90,7 +94,7 @@ function getImageResponse (intent, session, callback) {
       const cloudsMax = clouds + 5;
       apiUrl += `&cloud_from=${cloudsMin}&cloud_to=${cloudsMax}`;
       output += ' with ' + clouds + ' percent clouds'
-    } else if (slots.NoClouds.value) {
+    } else {
       apiUrl += `&cloud_from=0&cloud_to=10`;
       output += ' with no clouds';
     }
@@ -112,9 +116,10 @@ function getImageResponse (intent, session, callback) {
         output += ` from ${date.text.month} ${date.text.day} ${date.text.year}`
       }
 
-      apiUrl += dateFragment;
+      apiUrl += '&date_from=2016-10-01&date_to=2017-02-01';
     }
 
+    apiUrl += '&date_from=2016-10-01&date_to=2017-02-01';
     console.log('slots', slots);
     console.log('sessionAttributes.city', sessionAttributes.city);
     console.log('apiUrl', apiUrl);
@@ -148,9 +153,9 @@ function getImageResponse (intent, session, callback) {
         if (slots.HighResolutionImagery.value) {
           sessionAttributes.image_url = tilerUrl + results.scene_id;
         } else if (slots.LandWaterAnalysis.value) {
-          sessionAttributes.image_url = tilerUrl + results.scene_id + '?product=water';
+          sessionAttributes.image_url = tilerUrl + results.scene_id + '?product=water&resolution=2';
         } else if (slots.VegetationHealth.value) {
-          sessionAttributes.image_url = tilerUrl + results.scene_id + '?product=ndvi';
+          sessionAttributes.image_url = tilerUrl + results.scene_id + '?product=ndvi&resolution=2';
         } else {
           sessionAttributes.image_url = results.thumbnail;
         }
@@ -177,7 +182,7 @@ function requestImage (apiUrl, callback) {
 function sendDataToApp (data, callback) {
   var options = {
     method: 'POST',
-    url: 'https://arcane-chamber-39897.herokuapp.com',
+    url: 'https://arcane-chamber-39897.herokuapp.com/session-data',
     json: data
   };
 

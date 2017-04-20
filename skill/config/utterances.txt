@@ -26,11 +26,20 @@ GetImageIntent {ShowMe} {NoClouds} {Image} over {City}
 GetImageIntent {ShowMe} {Latest} {NoClouds} {Image} over {City}
 
 GetImageIntent {ShowMe} {VegetationHealth} for {City}
+GetImageIntent {ShowMe} {VegetationHealth} of {City}
+GetImageIntent {ShowMe} {VegetationHealth} in {City}
+GetImageIntent {ShowMe} {VegetationHealth} for {City} from {Date}
+GetImageIntent {ShowMe} {VegetationHealth} of {City} from {Date}
+GetImageIntent {ShowMe} {VegetationHealth} in {City} from {Date}
+
 GetImageIntent {ShowMe} {Latest} {VegetationHealth} for {City}
 GetImageIntent {ShowMe} {Latest} {VegetationHealth} for {City} from {Date}
-GetImageIntent {ShowMe} {VegetationHealth} from {Date} for {City}
 
 GetImageIntent {ShowMe} {LandWaterAnalysis} in {City}
 GetImageIntent {ShowMe} {LandWaterAnalysis} for {City}
 GetImageIntent {ShowMe} {LandWaterAnalysis} of {City}
+GetImageIntent {ShowMe} {LandWaterAnalysis} in {City} from {Date}
+GetImageIntent {ShowMe} {LandWaterAnalysis} for {City} from {Date}
+GetImageIntent {ShowMe} {LandWaterAnalysis} of {City} from {Date}
+
 GetImageIntent {ShowMe} {HighResolutionImagery} of {City}
