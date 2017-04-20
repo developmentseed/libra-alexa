@@ -37,6 +37,7 @@ app.get('/auth', (req, res) => {
 // });
 
 app.post('/progress', (req, res) => {
+  console.log('req.body', req.body)
   io.to(req.body.requestId).emit(req.query.type, req.body);
   res.status(200).send('');
 });
