@@ -17,7 +17,7 @@ var users = {}
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use('/alexa/', express.static(__dirname));
+app.use('/', express.static(__dirname));
 
 io.on('connection', function (socket) {
   console.log('socket', socket.id)
