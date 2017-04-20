@@ -136,7 +136,7 @@ function getImageResponse (intentRequest, session, callback) {
       apiUrl += '&satellite_name=landsat';
     }
 
-    var tilerUrl = 'http://ec2-54-87-182-19.compute-1.amazonaws.com/image/';
+    var tilerUrl = 'https://libra.developmentseed.org/alexa-live/image/';
 
     requestImage(apiUrl, function (err, body) {
       options = {
@@ -186,7 +186,7 @@ function requestImage (apiUrl, callback) {
 function sendDataToApp (type, data, callback) {
   var options = {
     method: 'POST',
-    url: 'https://arcane-chamber-39897.herokuapp.com/progress?type=' + type,
+    url: 'https://libra.developmentseed.org/alexa/progress?type=' + type,
     json: data
   };
 

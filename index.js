@@ -56,7 +56,7 @@ var alexa = Alexa({
   debug: true,
   deviceId: 'alexa_satellite',
   clientId: 'amzn1.application-oa2-client.f9b9e81dc82c445c995be4e25250f1db',
-  redirectUri: `https://${window.location.host}/auth`
+  redirectUri: `https://${window.location.host}/alexa/auth`
 });
 
 alexa.start();
