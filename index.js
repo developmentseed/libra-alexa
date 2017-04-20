@@ -120,7 +120,7 @@ function pageContentView () {
     return html`<div class='page__content'>
       <div class="microphone__background--images hidden">
         <div class='microphone__icon'>
-          <img src="/graphics/microphone.svg" alt="microphone" height="25" width="25">
+          <img src="/alexa/graphics/microphone.svg" alt="microphone" height="25" width="25">
         </div>
       </div>
     </div>`;
