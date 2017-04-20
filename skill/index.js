@@ -19,6 +19,8 @@ exports.handler = (event, context, callback) => {
       callback(new Error('Invalid Application ID'));
     }
 
+    sendDataToApp('request-data', { requestId: event.request.requestId, session: event.session })
+
     if (event.session.new) {
       onSessionStarted({ requestId: event.request.requestId }, event.session);
     }
@@ -162,7 +164,7 @@ function getImageResponse (intent, session, callback) {
         sessionAttributes.image = body.results[0];
         console.log('sessionAttributes', sessionAttributes);
 
-        sendDataToApp(sessionAttributes, function (err, res, body) {
+        sendDataToApp('session-data', sessionAttributes, function (err, res, body) {
           if (err) console.log(err);
           callback(sessionAttributes, response);
         });
@@ -179,10 +181,10 @@ function requestImage (apiUrl, callback) {
   });
 }
 
-function sendDataToApp (data, callback) {
+function sendDataToApp (type, data, callback) {
   var options = {
     method: 'POST',
-    url: 'https://arcane-chamber-39897.herokuapp.com/session-data',
+    url: 'https://arcane-chamber-39897.herokuapp.com/progress?type=' + type,
     json: data
   };
 

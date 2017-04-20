@@ -23,6 +23,10 @@ io.on('disconnect', function () {
   console.log('disconnected');
 });
 
+io.on('request-data', function (data) {
+  console.log('request-data', data);
+});
+
 io.on('session-data', function (data) {
   mic.className = micResponding;
   var bg = 'url(' + data.image_url + ')';

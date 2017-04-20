@@ -32,8 +32,12 @@ app.get('/auth', (req, res) => {
 });
 
 app.post('/session-data', (req, res) => {
-  console.log('session-data req', req.body);
   io.emit('session-data', req.body);
+  res.status(200).send('');
+});
+
+app.post('/progress', (req, res) => {
+  io.emit(req.query.type, req.body);
   res.status(200).send('');
 });
 
