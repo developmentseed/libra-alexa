@@ -165,9 +165,8 @@ function getImageResponse (intentRequest, session, callback) {
           });
         }
       });
-    }
-  })
-
+    })
+  }
 }
 
 function requestImage (apiUrl, callback) {
