@@ -1,7 +1,8 @@
-const cities = require('all-the-cities');
 const request = require('request');
 
 const getDate = require('./get-date');
+
+const MAPZEN_KEY = process.env.MAPZEN_KEY;
 
 /*
 *
@@ -73,106 +74,100 @@ function getImageResponse (intentRequest, session, callback) {
   console.log('session', session);
 
   if (slots.City.value) {
-    if (slots.City.value === 'Florence') {
-      slots.City.value = 'Firenze';
-    }
-
     sessionAttributes.city = slots.City.value;
 
-    sessionAttributes.city = cities.filter(city => {
-      return city.name === sessionAttributes.city;
-    })[0];
-
-    // return early if not found
-    if (!sessionAttributes.city) {
-      return sendErrorResponse(options, sessionAttributes, callback);
-    }
-
-    const lon = sessionAttributes.city.lon;
-    const lat = sessionAttributes.city.lat;
-    var apiUrl = `https://api.developmentseed.org/satellites/?contains=${lon},${lat}&limit=1`;
-
-    output = 'Here\'s what I\'ve got for ' + sessionAttributes.city.name;
-
-    if (slots.CloudPercentage.value) {
-      const clouds = parseInt(slots.CloudPercentage.value);
-      const cloudsMin = clouds - 5;
-      const cloudsMax = clouds + 5;
-      apiUrl += `&cloud_from=${cloudsMin}&cloud_to=${cloudsMax}`;
-      output += ' with ' + clouds + ' percent clouds';
-    } else if (slots.NoClouds.value) {
-      apiUrl += '&cloud_from=0&cloud_to=10';
-      output += ' with no clouds';
-    } else {
-      apiUrl += '&cloud_from=0&cloud_to=10';
-    }
-
-    if (slots.Date.value) {
-      const date = getDate(slots.Date.value);
-      console.log('date', slots.Date.value, date);
-      // let dateFragment;
-      // if (date.onlyYear) {
-      //   dateFragment += `&date_from=${date.year}-01-01&date_to=${date.year}-12-31`;
-      //   output += ` from ${date.text.month}`
-      // } else if (date.hasMonth && !date.hasDay) {
-      //   dateFragment += `&date_from=${date.year}-${date.month}-01&date_to=${date.year}-${date.month}-${date.lastDayOfMonth}`;
-      //   output += ` from ${date.text.month} ${date.text.year}`
-      // } else if (date.hasDay) {
-      //   dateFragment += `&date_from=${date.year}-${date.month}-${date.day}&date_to=${date.year}-${date.month}-${date.day}`;
-      //   output += ` from ${date.text.month} ${date.text.day} ${date.text.year}`
-      // }
-      // apiUrl += '&date_from=2016-10-01&date_to=2017-02-01';
-    }
-
-    apiUrl += '&date_from=2016-10-01&date_to=2017-02-01';
-    console.log('slots', slots);
-    console.log('sessionAttributes.city', sessionAttributes.city);
-    console.log('apiUrl', apiUrl);
-
-    // only use sentinal for the high-res imagery for now
-    if (slots.HighResolutionImagery.value) {
-      apiUrl += '&satellite_name=sentinel';
-    } else {
-      apiUrl += '&satellite_name=landsat';
-    }
-
-    var tilerUrl = 'https://libra.developmentseed.org/alexa-live/image/';
-
-    requestImage(apiUrl, function (err, body) {
-      options = {
-        title: sessionAttributes.city + ' Satellite Images',
-        output: output,
-        endSession: false
-      };
-
-      if (err || !body.results || !body.results.length) {
-        sendErrorResponse(options, sessionAttributes, callback);
-      } else {
-        const response = buildSpeechletResponse(options);
-        const results = body.results[0];
-        sessionAttributes.image = results;
-
-        if (slots.HighResolutionImagery.value) {
-          sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&resolution=2`;
-        } else if (slots.LandWaterAnalysis.value) {
-          sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&product=water&resolution=2`;
-        } else if (slots.VegetationHealth.value) {
-          sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&product=ndvi&resolution=2`;
-        } else {
-          sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&resolution=2`;
-        }
-
-        sessionAttributes.image = body.results[0];
-        console.log('sessionAttributes', sessionAttributes);
-
-        sessionAttributes.requestId = intentRequest.requestId;
-        sendDataToApp('session-data', sessionAttributes, function (err, res, body) {
-          if (err) console.log(err);
-          callback(sessionAttributes, response);
-        });
+    request('https://search.mapzen.com/v1/search?text=' + slots.City.value + '&api_key=' + MAPZEN_KEY, function (err, body) {
+      if (err || !body.features || body.features.length == 0) {
+        return sendErrorResponse(options, sessionAttributes, callback);
       }
-    });
-  }
+
+      var feature = body.features[0]
+      var [lon, lat] = feature.geometry.coordinates;
+      var apiUrl = `https://api.developmentseed.org/satellites/?contains=${lon},${lat}&limit=1`;
+
+      output = 'Here\'s what I\'ve got for ' + sessionAttributes.city.name;
+
+      if (slots.CloudPercentage.value) {
+        const clouds = parseInt(slots.CloudPercentage.value);
+        const cloudsMin = clouds - 5;
+        const cloudsMax = clouds + 5;
+        apiUrl += `&cloud_from=${cloudsMin}&cloud_to=${cloudsMax}`;
+        output += ' with ' + clouds + ' percent clouds';
+      } else if (slots.NoClouds.value) {
+        apiUrl += '&cloud_from=0&cloud_to=10';
+        output += ' with no clouds';
+      } else {
+        apiUrl += '&cloud_from=0&cloud_to=10';
+      }
+
+      if (slots.Date.value) {
+        const date = getDate(slots.Date.value);
+        console.log('date', slots.Date.value, date);
+        // let dateFragment;
+        // if (date.onlyYear) {
+        //   dateFragment += `&date_from=${date.year}-01-01&date_to=${date.year}-12-31`;
+        //   output += ` from ${date.text.month}`
+        // } else if (date.hasMonth && !date.hasDay) {
+        //   dateFragment += `&date_from=${date.year}-${date.month}-01&date_to=${date.year}-${date.month}-${date.lastDayOfMonth}`;
+        //   output += ` from ${date.text.month} ${date.text.year}`
+        // } else if (date.hasDay) {
+        //   dateFragment += `&date_from=${date.year}-${date.month}-${date.day}&date_to=${date.year}-${date.month}-${date.day}`;
+        //   output += ` from ${date.text.month} ${date.text.day} ${date.text.year}`
+        // }
+        // apiUrl += '&date_from=2016-10-01&date_to=2017-02-01';
+      }
+
+      apiUrl += '&date_from=2016-10-01&date_to=2017-02-01';
+      console.log('slots', slots);
+      console.log('sessionAttributes.city', sessionAttributes.city);
+      console.log('apiUrl', apiUrl);
+
+      // only use sentinal for the high-res imagery for now
+      if (slots.HighResolutionImagery.value) {
+        apiUrl += '&satellite_name=sentinel';
+      } else {
+        apiUrl += '&satellite_name=landsat';
+      }
+
+      var tilerUrl = 'https://libra.developmentseed.org/alexa-live/image/';
+
+      requestImage(apiUrl, function (err, body) {
+        options = {
+          title: sessionAttributes.city + ' Satellite Images',
+          output: output,
+          endSession: false
+        };
+
+        if (err || !body.results || !body.results.length) {
+          sendErrorResponse(options, sessionAttributes, callback);
+        } else {
+          const response = buildSpeechletResponse(options);
+          const results = body.results[0];
+          sessionAttributes.image = results;
+
+          if (slots.HighResolutionImagery.value) {
+            sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&resolution=2`;
+          } else if (slots.LandWaterAnalysis.value) {
+            sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&product=water&resolution=2`;
+          } else if (slots.VegetationHealth.value) {
+            sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&product=ndvi&resolution=2`;
+          } else {
+            sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&resolution=2`;
+          }
+
+          sessionAttributes.image = body.results[0];
+          console.log('sessionAttributes', sessionAttributes);
+
+          sessionAttributes.requestId = intentRequest.requestId;
+          sendDataToApp('session-data', sessionAttributes, function (err, res, body) {
+            if (err) console.log(err);
+            callback(sessionAttributes, response);
+          });
+        }
+      });
+    }
+  })
+
 }
 
 function requestImage (apiUrl, callback) {
@@ -216,10 +211,10 @@ function endSessionResponse (sessionAttributes, callback) {
 }
 
 /*
-*
-* EVENT HANDLERS
-*
-*/
+ *
+ * EVENT HANDLERS
+ *
+ */
 
 function onSessionStarted (sessionStartedRequest, session) {
   console.log(`onSessionStarted requestId=${sessionStartedRequest.requestId}, sessionId=${session.sessionId}`);
@@ -258,10 +253,10 @@ function onSessionEnded (sessionEndedRequest, session) {
 }
 
 /*
-*
-* HELPERS
-*
-*/
+ *
+ * HELPERS
+ *
+ */
 
 function buildSpeechletResponse (options) {
   return {
