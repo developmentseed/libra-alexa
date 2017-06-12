@@ -8,6 +8,10 @@ get me a
 show me a
 get me the
 show me the
+show me the latest
+get me the latest
+show the latest
+get the latest
 get the
 show the
 get satellite

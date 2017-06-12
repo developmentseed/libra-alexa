@@ -11,7 +11,7 @@ const upload = multer({ dest: uploadsDir });
 const app = express();
 
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
+var io = require('socket.io')(server, { path: '/socket.io' });
 var users = {}
 
 app.use(bodyParser.urlencoded({ extended: true }));

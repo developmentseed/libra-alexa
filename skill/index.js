@@ -74,8 +74,6 @@ function getImageResponse (intentRequest, session, callback) {
   console.log('session', session);
 
   if (slots.City.value) {
-    sessionAttributes.city = slots.City.value;
-
     console.log('CITY VALUE', slots.City.value)
 
     const requestOptions = {
@@ -95,7 +93,7 @@ function getImageResponse (intentRequest, session, callback) {
       var [lon, lat] = feature.geometry.coordinates;
       var apiUrl = `https://api.developmentseed.org/satellites/?contains=${lon},${lat}&limit=1`;
 
-      output = 'Here\'s what I\'ve got for ' + sessionAttributes.city;
+      sessionAttributes.city = feature
 
       if (slots.CloudPercentage.value) {
         const clouds = parseInt(slots.CloudPercentage.value);
@@ -139,11 +137,11 @@ function getImageResponse (intentRequest, session, callback) {
         apiUrl += '&satellite_name=landsat';
       }
 
-      var tilerUrl = 'https://libra.developmentseed.org/alexa-live/image/';
+      var tilerUrl = 'https://alexa.developmentseed.org/live/image/';
 
       requestImage(apiUrl, function (err, body) {
         options = {
-          title: sessionAttributes.city + ' Satellite Images',
+          title: sessionAttributes.city.name + ' Satellite Images',
           output: output,
           endSession: false
         };
@@ -151,28 +149,43 @@ function getImageResponse (intentRequest, session, callback) {
         if (err || !body.results || !body.results.length) {
           sendErrorResponse(options, sessionAttributes, callback);
         } else {
-          const response = buildSpeechletResponse(options);
           const results = body.results[0];
           sessionAttributes.image = results;
+          sessionAttributes.tileType = ''
 
           if (slots.HighResolutionImagery.value) {
             sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&resolution=2`;
           } else if (slots.LandWaterAnalysis.value) {
             sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&product=water&resolution=2`;
+            sessionAttributes.tileType = 'land water analysis';
           } else if (slots.VegetationHealth.value) {
             sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&product=ndvi&resolution=2`;
+            sessionAttributes.tileType = 'NDVI';
           } else {
-            sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&resolution=2`;
+            const response = buildSpeechletResponse(options);
+            const results = body.results[0];
+            sessionAttributes.image = results;
+
+            if (slots.HighResolutionImagery.value) {
+              sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&resolution=2`;
+            } else if (slots.LandWaterAnalysis.value) {
+              sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&product=water&resolution=2`;
+            } else if (slots.VegetationHealth.value) {
+              sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&product=ndvi&resolution=2`;
+            } else {
+              sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&resolution=2`;
+            }
+
+            sessionAttributes.image = body.results[0];
+            console.log('sessionAttributes', sessionAttributes);
+
+            sessionAttributes.requestId = intentRequest.requestId;
+            sendDataToApp('session-data', sessionAttributes, function (err, res, body) {
+              if (err) console.log(err);
+              console.log('sent session data', err, res.statusCode, body)
+              callback(sessionAttributes, response);
+            });
           }
-
-          sessionAttributes.image = body.results[0];
-          console.log('sessionAttributes', sessionAttributes);
-
-          sessionAttributes.requestId = intentRequest.requestId;
-          sendDataToApp('session-data', sessionAttributes, function (err, res, body) {
-            if (err) console.log(err);
-            callback(sessionAttributes, response);
-          });
         }
       });
     })
@@ -190,7 +203,7 @@ function requestImage (apiUrl, callback) {
 function sendDataToApp (type, data, callback) {
   var options = {
     method: 'POST',
-    url: 'https://libra.developmentseed.org/alexa/progress?type=' + type,
+    url: 'https://alexa.developmentseed.org/progress?type=' + type,
     json: data
   };
 
@@ -198,7 +211,7 @@ function sendDataToApp (type, data, callback) {
 }
 
 function sendErrorResponse (options, sessionAttributes, callback) {
-  options.output = 'I\'m sorry, I didn\'t find any matching images';
+  options.output = 'I\'m sorry, I didn\'t find any matching images for ' + sessionAttributes.city.name;
   const response = buildSpeechletResponse(options);
   callback(sessionAttributes, response);
 }
