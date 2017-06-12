@@ -76,16 +76,26 @@ function getImageResponse (intentRequest, session, callback) {
   if (slots.City.value) {
     sessionAttributes.city = slots.City.value;
 
-    request('https://search.mapzen.com/v1/search?text=' + slots.City.value + '&api_key=' + MAPZEN_KEY, function (err, body) {
+    console.log('CITY VALUE', slots.City.value)
+
+    const requestOptions = {
+      url: 'https://search.mapzen.com/v1/search?text=' + slots.City.value + '&api_key=' + MAPZEN_KEY,
+      json: true
+    }
+
+    request(requestOptions, function (err, res, body) {
+      console.log('MAPZEN BODY', body)
       if (err || !body.features || body.features.length == 0) {
+        console.log('ERROR?', err || !body.features || ('body.features.length ' + body.features.length))
         return sendErrorResponse(options, sessionAttributes, callback);
       }
 
+      console.log('MAPZEN RESPONSE', body.features)
       var feature = body.features[0]
       var [lon, lat] = feature.geometry.coordinates;
       var apiUrl = `https://api.developmentseed.org/satellites/?contains=${lon},${lat}&limit=1`;
 
-      output = 'Here\'s what I\'ve got for ' + sessionAttributes.city.name;
+      output = 'Here\'s what I\'ve got for ' + sessionAttributes.city;
 
       if (slots.CloudPercentage.value) {
         const clouds = parseInt(slots.CloudPercentage.value);
