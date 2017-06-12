@@ -57,8 +57,10 @@ module.exports = function alexaVoiceService (options) {
         let directives;
         const audioResponses = {};
         const promises = [];
-
+        console.log('response.multipart.length', response.multipart.length)
         response.multipart.forEach(function (multipart) {
+          console.log('multipart', multipart)
+          if (!multipart.headers || !multipart.body) return
           const contentType = multipart.headers['Content-Type'];
           let body = multipart.body;
 

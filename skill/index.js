@@ -1,7 +1,8 @@
-const cities = require('all-the-cities');
 const request = require('request');
 
 const getDate = require('./get-date');
+
+const MAPZEN_KEY = process.env.MAPZEN_KEY;
 
 /*
 *
@@ -72,27 +73,33 @@ function getImageResponse (intentRequest, session, callback) {
   console.log('intent', intent);
   console.log('session', session);
 
-  if (slots.City.value) {
-    if (slots.City.value === 'Florence') {
-      slots.City.value = 'Firenze';
-    }
+  console.log('SLOTS', slots)
 
-    sessionAttributes.city = slots.City.value;
+  // return early if not found
+  if (!slots.City.value) {
+    return sendErrorResponse(options, sessionAttributes, callback);
+  }
 
-    sessionAttributes.city = cities.filter(city => {
-      return city.name === sessionAttributes.city;
-    })[0];
+  console.log('CITY VALUE', slots.City.value)
 
-    // return early if not found
-    if (!sessionAttributes.city) {
+  const requestOptions = {
+    url: 'https://search.mapzen.com/v1/search?text=' + slots.City.value + '&api_key=' + MAPZEN_KEY,
+    json: true
+  }
+
+  request(requestOptions, function (err, res, body) {
+    console.log('MAPZEN BODY', body)
+    if (err || !body.features || body.features.length == 0) {
+      console.log('ERROR?', err || !body.features || ('body.features.length ' + body.features.length))
       return sendErrorResponse(options, sessionAttributes, callback);
     }
 
-    const lon = sessionAttributes.city.lon;
-    const lat = sessionAttributes.city.lat;
+    console.log('MAPZEN RESPONSE', body.features)
+    var feature = body.features[0]
+    var [lon, lat] = feature.geometry.coordinates;
     var apiUrl = `https://api.developmentseed.org/satellites/?contains=${lon},${lat}&limit=1`;
 
-    output = 'Here\'s what I\'ve got for ' + sessionAttributes.city.name;
+    sessionAttributes.city = feature.properties;
 
     if (slots.CloudPercentage.value) {
       const clouds = parseInt(slots.CloudPercentage.value);
@@ -136,7 +143,7 @@ function getImageResponse (intentRequest, session, callback) {
       apiUrl += '&satellite_name=landsat';
     }
 
-    var tilerUrl = 'https://libra.developmentseed.org/alexa-live/image/';
+    var tilerUrl = 'https://alexa.developmentseed.org/live/image/';
 
     requestImage(apiUrl, function (err, body) {
       options = {
@@ -148,16 +155,18 @@ function getImageResponse (intentRequest, session, callback) {
       if (err || !body.results || !body.results.length) {
         sendErrorResponse(options, sessionAttributes, callback);
       } else {
-        const response = buildSpeechletResponse(options);
         const results = body.results[0];
         sessionAttributes.image = results;
+        sessionAttributes.tileType = ''
 
         if (slots.HighResolutionImagery.value) {
           sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&resolution=2`;
         } else if (slots.LandWaterAnalysis.value) {
           sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&product=water&resolution=2`;
+          sessionAttributes.tileType = 'land water analysis';
         } else if (slots.VegetationHealth.value) {
           sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&product=ndvi&resolution=2`;
+          sessionAttributes.tileType = 'NDVI';
         } else {
           sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&resolution=2`;
         }
@@ -166,13 +175,22 @@ function getImageResponse (intentRequest, session, callback) {
         console.log('sessionAttributes', sessionAttributes);
 
         sessionAttributes.requestId = intentRequest.requestId;
+
+        if (sessionAttributes.tileType) {
+          options.output = `I have a ${sessionAttributes.tileType} image for ${sessionAttributes.city.name}. Processing the image now`;
+        } else {
+          options.output = `I have an image for ${sessionAttributes.city.name}. Processing the image now`;
+        }
+
+        const response = buildSpeechletResponse(options);
+
         sendDataToApp('session-data', sessionAttributes, function (err, res, body) {
           if (err) console.log(err);
           callback(sessionAttributes, response);
         });
       }
     });
-  }
+  })
 }
 
 function requestImage (apiUrl, callback) {
@@ -186,7 +204,7 @@ function requestImage (apiUrl, callback) {
 function sendDataToApp (type, data, callback) {
   var options = {
     method: 'POST',
-    url: 'https://libra.developmentseed.org/alexa/progress?type=' + type,
+    url: 'https://alexa.developmentseed.org/progress?type=' + type,
     json: data
   };
 
@@ -194,7 +212,7 @@ function sendDataToApp (type, data, callback) {
 }
 
 function sendErrorResponse (options, sessionAttributes, callback) {
-  options.output = 'I\'m sorry, I didn\'t find any matching images';
+  options.output = 'I\'m sorry, I didn\'t find any matching images for ' + sessionAttributes.city.name;
   const response = buildSpeechletResponse(options);
   callback(sessionAttributes, response);
 }

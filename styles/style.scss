@@ -13,6 +13,15 @@ ul {
   padding: 0;
 }
 
+#notifications {
+  position: fixed;
+  text-align: center;
+  width: 100%;
+  left: 0;
+  color: #fff;
+  bottom: 100px;
+}
+
 .content {
   flex: 1;
   background-image:
@@ -194,7 +203,7 @@ ul {
   }
 }
 
-.button--login {
+.button--login, .button--logout {
   margin-top: 2rem;
   float: left;
 }
