@@ -25,12 +25,19 @@ io.on('disconnect', function () {
   console.log('disconnected');
 });
 
+var requested
 io.on('request-data', function (data) {
   console.log('request-data', data);
-  io.emit('join', data);
+  if (!requested) {
+    requested = true;
+    io.emit('join', data);
+  } else {
+    resetViews();
+  }
 });
 
 io.on('session-data', function (data) {
+  requested = false;
   mic.className = micResponding;
   var bg = 'url(' + data.image_url + ')';
   var container = document.querySelector('.content');
@@ -68,10 +75,6 @@ alexa.start();
 
 if (loginButton) {
   loginButton.addEventListener('click', alexa.login);
-}
-
-if (logoutButton) {
-
 }
 
 recordButton.addEventListener('mousedown', startRecording);
@@ -114,13 +117,17 @@ function updateImageInfoView (data) {
 }
 
 function imageInfoView (data) {
-  return html`<div class='image__info'>
-    <h2 class='image__title'>${data.city.name}, ${data.city.adminCode} ${data.city.country}</h2>
-    <ul class='image__meta'>
-      <li class='image__meta--item'>${data.image.date}</li>
-      <li class='image__meta--item'>${data.image.satellite_name}</li>
-    </ul>
-  </div>`;
+  if (data) {
+    return html`<div class='image__info'>
+      <h2 class='image__title'>${data.city.name}, ${data.city.adminCode} ${data.city.country}</h2>
+      <ul class='image__meta'>
+        <li class='image__meta--item'>${data.image.date}</li>
+        <li class='image__meta--item'>${data.image.satellite_name}</li>
+      </ul>
+    </div>`;
+  } else {
+    html`<div class='image__info'></div>`;
+  }
 }
 
 function pageContentView () {
@@ -157,4 +164,10 @@ function notificationsView (msg) {
 
 function updateNotificationsView (msg) {
   html.update(notifications, notificationsView(msg));
+}
+
+function resetViews () {
+  updatePageContentView();
+  updateNotificationsView('Hold the spacebar to search for a satellite image of a location.');
+  updateImageInfoView();
 }
