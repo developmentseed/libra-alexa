@@ -152,6 +152,8 @@ function getImageResponse (intentRequest, session, callback) {
         endSession: false
       };
 
+      console.log('image tiler response', err, body)
+
       if (err || !body.results || !body.results.length) {
         sendErrorResponse(options, sessionAttributes, callback);
       } else {
