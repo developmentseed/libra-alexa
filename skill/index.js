@@ -131,7 +131,7 @@ function getImageResponse (intentRequest, session, callback) {
       // apiUrl += '&date_from=2016-10-01&date_to=2017-02-01';
     }
 
-    apiUrl += '&date_from=2016-10-01&date_to=2017-02-01';
+    apiUrl += '&date_from=2016-01-01&date_to=2017-04-01';
     console.log('slots', slots);
     console.log('sessionAttributes.city', sessionAttributes.city);
     console.log('apiUrl', apiUrl);
