@@ -1,7 +1,8 @@
-const cities = require('all-the-cities');
 const request = require('request');
 
 const getDate = require('./get-date');
+
+const MAPZEN_KEY = process.env.MAPZEN_KEY;
 
 /*
 *
@@ -72,25 +73,33 @@ function getImageResponse (intentRequest, session, callback) {
   console.log('intent', intent);
   console.log('session', session);
 
-  if (slots.City.value) {
-    if (slots.City.value === 'Florence') {
-      slots.City.value = 'Firenze';
-    }
+  console.log('SLOTS', slots)
 
-    sessionAttributes.city = slots.City.value;
+  // return early if not found
+  if (!slots.City.value) {
+    return sendErrorResponse(options, sessionAttributes, callback);
+  }
 
-    sessionAttributes.city = cities.filter(city => {
-      return city.name === sessionAttributes.city;
-    })[0];
+  console.log('CITY VALUE', slots.City.value)
 
-    // return early if not found
-    if (!sessionAttributes.city) {
+  const requestOptions = {
+    url: 'https://search.mapzen.com/v1/search?text=' + slots.City.value + '&api_key=' + MAPZEN_KEY,
+    json: true
+  }
+
+  request(requestOptions, function (err, res, body) {
+    console.log('MAPZEN BODY', body)
+    if (err || !body.features || body.features.length == 0) {
+      console.log('ERROR?', err || !body.features || ('body.features.length ' + body.features.length))
       return sendErrorResponse(options, sessionAttributes, callback);
     }
 
-    const lon = sessionAttributes.city.lon;
-    const lat = sessionAttributes.city.lat;
+    console.log('MAPZEN RESPONSE', body.features)
+    var feature = body.features[0]
+    var [lon, lat] = feature.geometry.coordinates;
     var apiUrl = `https://api.developmentseed.org/satellites/?contains=${lon},${lat}&limit=1`;
+
+    sessionAttributes.city = feature.properties;
 
     if (slots.CloudPercentage.value) {
       const clouds = parseInt(slots.CloudPercentage.value);
@@ -122,7 +131,7 @@ function getImageResponse (intentRequest, session, callback) {
       // apiUrl += '&date_from=2016-10-01&date_to=2017-02-01';
     }
 
-    apiUrl += '&date_from=2016-10-01&date_to=2017-02-01';
+    apiUrl += '&date_from=2016-01-01&date_to=2017-04-01';
     console.log('slots', slots);
     console.log('sessionAttributes.city', sessionAttributes.city);
     console.log('apiUrl', apiUrl);
@@ -142,6 +151,8 @@ function getImageResponse (intentRequest, session, callback) {
         output: output,
         endSession: false
       };
+
+      console.log('image tiler response', err, body)
 
       if (err || !body.results || !body.results.length) {
         sendErrorResponse(options, sessionAttributes, callback);
@@ -166,7 +177,13 @@ function getImageResponse (intentRequest, session, callback) {
         console.log('sessionAttributes', sessionAttributes);
 
         sessionAttributes.requestId = intentRequest.requestId;
-        options.output = `I\'ve got ${sessionAttributes.tileType} images for ${sessionAttributes.city.name}. Processing the image now`;
+
+        if (sessionAttributes.tileType) {
+          options.output = `I have a ${sessionAttributes.tileType} image for ${sessionAttributes.city.name}. Processing the image now`;
+        } else {
+          options.output = `I have an image for ${sessionAttributes.city.name}. Processing the image now`;
+        }
+
         const response = buildSpeechletResponse(options);
 
         sendDataToApp('session-data', sessionAttributes, function (err, res, body) {
@@ -175,7 +192,7 @@ function getImageResponse (intentRequest, session, callback) {
         });
       }
     });
-  }
+  })
 }
 
 function requestImage (apiUrl, callback) {
