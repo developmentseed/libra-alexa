@@ -129,7 +129,7 @@ function pageContentView () {
   if (token) {
     function onclickLogout () {
       localStorage.removeItem('libra-alexa-token');
-      window.location = window.location.host;
+      window.location = '/';
     }
 
     return html`<div class='page__content'>
