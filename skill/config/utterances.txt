@@ -23,6 +23,8 @@ GetImageIntent {ShowMe} {City} with {NoClouds}
 GetImageIntent {ShowMe} {City} with {NoClouds} from {Date}
 GetImageIntent {ShowMe} {City} with {CloudPercentage} percent clouds from {Date}
 
+GetImageIntent {ShowMe} {City} at {Night}
+
 GetImageIntent {ShowMe} {NoClouds} {Image} over {City}
 GetImageIntent {ShowMe} {Latest} {NoClouds} {Image} over {City}
 
@@ -51,3 +53,4 @@ GetImageIntent {ShowMe} {HighResolutionImagery} of {City}
 GetImageIntent {ShowMe} {HighResolutionImagery} in {City}
 GetImageIntent {ShowMe} {HighResolutionImagery} over {City}
 GetImageIntent {ShowMe} {HighResolutionImagery} for {City}
+

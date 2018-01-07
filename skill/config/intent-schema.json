@@ -42,6 +42,10 @@
         {
           "name": "Date",
           "type": "AMAZON.DATE"
+        },
+        {
+          "name": "Night",
+          "type": "NIGHT"
         }
       ]
     },

@@ -1,1 +1,1 @@
-# alexa-satellite-skill
+# libra-alexa-skill
