@@ -143,7 +143,7 @@ function getImageResponse (intentRequest, session, callback) {
       apiUrl += '&satellite_name=landsat';
     }
 
-    var tilerUrl = 'http://1e5fec87.ngrok.io/image/';
+    var tilerUrl = 'http://ec2-34-229-43-216.compute-1.amazonaws.com/image/';
 
     requestImage(apiUrl, function (err, body) {
       options = {
