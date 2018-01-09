@@ -165,7 +165,7 @@ function getImageResponse (intentRequest, session, callback) {
         console.log('NIGHT', slots.Night)
 
         if (slots.Night && slots.Night.value) {
-          sessionAttributes.image_url = tilerUrl + `viirs?point=${lon},${lat}`;
+          sessionAttributes.image_url = tilerUrl + `viirs?point=${lat},${lon}`;
           sessionAttributes.image_source = 'VIIRS';
           sessionAttributes.image_date = 'November, 2017';
         } else {
