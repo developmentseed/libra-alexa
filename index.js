@@ -122,8 +122,8 @@ function imageInfoView (data) {
     return html`<div class='image__info'>
       <h2 class='image__title'>${data.city.name}, ${data.city.country}</h2>
       <ul class='image__meta'>
-        <li class='image__meta--item'>${data.image.date}</li>
-        <li class='image__meta--item'>${data.image.satellite_name}</li>
+        <li class='image__meta--item'>${data.image_date}</li>
+        <li class='image__meta--item'>${data.image_source}</li>
       </ul>
     </div>`;
   } else {

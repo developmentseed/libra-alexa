@@ -131,7 +131,7 @@ function getImageResponse (intentRequest, session, callback) {
       // apiUrl += '&date_from=2016-10-01&date_to=2017-02-01';
     }
 
-    apiUrl += '&date_from=2016-01-01&date_to=2017-04-01';
+    apiUrl += '&date_from=2017-06-01&date_to=2017-12-31';
     console.log('slots', slots);
     console.log('sessionAttributes.city', sessionAttributes.city);
     console.log('apiUrl', apiUrl);
@@ -143,67 +143,68 @@ function getImageResponse (intentRequest, session, callback) {
       apiUrl += '&satellite_name=landsat';
     }
 
-    var tilerUrl = 'https://alexa.developmentseed.org/live/image/';
+    var tilerUrl = 'http://1e5fec87.ngrok.io/image/';
 
-    if (slots.Night.value) {
-      // TODO: the tiler url might be different
-      return requestImage(apiUrl, function (err, body) {
-        // TODO: handle response from tiler
-        // set sessionAttributes.image
-        // set sessionAttributes.image_url
-        // set sessionAttributes.tileType
-        // set sessionAttributes.requestId
-        console.log(err, body);
-      });
-    } else {
-      requestImage(apiUrl, function (err, body) {
-        options = {
-          title: sessionAttributes.city + ' Satellite Images',
-          output: output,
-          endSession: false
-        };
+    requestImage(apiUrl, function (err, body) {
+      options = {
+        title: sessionAttributes.city + ' Satellite Images',
+        output: output,
+        endSession: false
+      };
 
-        console.log('image tiler response', err, body)
+      console.log('image tiler response', err, body)
 
-        if (err || !body.results || !body.results.length) {
-          sendErrorResponse(options, sessionAttributes, callback);
+      if (err || !body.results || !body.results.length) {
+        sendErrorResponse(options, sessionAttributes, callback);
+      } else {
+        const results = body.results[0];
+        console.log('satapi results', results)
+        sessionAttributes.image = results;
+        sessionAttributes.tileType = ''
+
+        console.log('NIGHT', slots.Night)
+
+        if (slots.Night && slots.Night.value) {
+          sessionAttributes.image_url = tilerUrl + `viirs?point=${lon},${lat}`;
+          sessionAttributes.image_source = 'VIIRS';
+          sessionAttributes.image_date = 'November, 2017';
         } else {
-          const results = body.results[0];
-          sessionAttributes.image = results;
-          sessionAttributes.tileType = ''
+          tilerUrl += `landsat/`;
+          sessionAttributes.image_source = 'LANDSAT-8';
+          sessionAttributes.image_date = results.date;
 
           if (slots.HighResolutionImagery.value) {
-            sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&resolution=2`;
+            sessionAttributes.image_url = tilerUrl + results.product_id + `?point=${lon},${lat}&resolution=2`;
           } else if (slots.LandWaterAnalysis.value) {
-            sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&product=water&resolution=2`;
+            sessionAttributes.image_url = tilerUrl + results.product_id + `?point=${lon},${lat}&product=water&resolution=2`;
             sessionAttributes.tileType = 'land water analysis';
           } else if (slots.VegetationHealth.value) {
-            sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&product=ndvi&resolution=2`;
+            sessionAttributes.image_url = tilerUrl + results.product_id + `?point=${lon},${lat}&product=ndvi&resolution=2`;
             sessionAttributes.tileType = 'NDVI';
           } else {
-            sessionAttributes.image_url = tilerUrl + results.scene_id + `?point=${lon},${lat}&resolution=2`;
+            sessionAttributes.image_url = tilerUrl + results.product_id + `?point=${lon},${lat}&resolution=2`;
           }
-
-          sessionAttributes.image = body.results[0];
-          console.log('sessionAttributes', sessionAttributes);
-
-          sessionAttributes.requestId = intentRequest.requestId;
-
-          if (sessionAttributes.tileType) {
-            options.output = `I have a ${sessionAttributes.tileType} image for ${sessionAttributes.city.name}. Processing the image now`;
-          } else {
-            options.output = `I have an image for ${sessionAttributes.city.name}. Processing the image now`;
-          }
-
-          const response = buildSpeechletResponse(options);
-
-          sendDataToApp('session-data', sessionAttributes, function (err, res, body) {
-            if (err) console.log(err);
-            callback(sessionAttributes, response);
-          });
         }
-      });
-    }
+
+        sessionAttributes.image = body.results[0];
+        console.log('sessionAttributes', sessionAttributes);
+
+        sessionAttributes.requestId = intentRequest.requestId;
+
+        if (sessionAttributes.tileType) {
+          options.output = `I have a ${sessionAttributes.tileType} image for ${sessionAttributes.city.name}. Processing the image now`;
+        } else {
+          options.output = `I have an image for ${sessionAttributes.city.name}. Processing the image now`;
+        }
+
+        const response = buildSpeechletResponse(options);
+
+        sendDataToApp('session-data', sessionAttributes, function (err, res, body) {
+          if (err) console.log(err);
+          callback(sessionAttributes, response);
+        });
+      }
+    });
   });
 }
 
