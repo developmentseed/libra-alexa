@@ -143,7 +143,7 @@ function getImageResponse (intentRequest, session, callback) {
       apiUrl += '&satellite_name=landsat';
     }
 
-    var tilerUrl = 'http://ec2-52-38-234-42.compute-1.amazonaws.com/image/';
+    var tilerUrl = 'http://ec2-52-38-234-42.us-west-2.compute.amazonaws.com/image/';
 
     requestImage(apiUrl, function (err, body) {
       options = {
