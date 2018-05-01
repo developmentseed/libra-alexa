@@ -1,8 +1,9 @@
 const request = require('request');
-
+const mapboxApiClient = require('mapbox');
 const getDate = require('./get-date');
 
-const MAPZEN_KEY = process.env.MAPZEN_KEY;
+const MAPBOX_KEY = process.env.MAPBOX_KEY;
+const mapbox = mapboxApiClient(MAPBOX_KEY);
 
 /*
 *
@@ -82,19 +83,14 @@ function getImageResponse (intentRequest, session, callback) {
 
   console.log('CITY VALUE', slots.City.value)
 
-  const requestOptions = {
-    url: 'https://search.mapzen.com/v1/search?text=' + slots.City.value + '&api_key=' + MAPZEN_KEY,
-    json: true
-  }
-
-  request(requestOptions, function (err, res, body) {
-    console.log('MAPZEN BODY', body)
+  mapbox.geocodeForward(requestOptions, function (err, body, res) {
+    console.log('MAPBOX response', body)
     if (err || !body.features || body.features.length == 0) {
       console.log('ERROR?', err || !body.features || ('body.features.length ' + body.features.length))
       return sendErrorResponse(options, sessionAttributes, callback);
     }
 
-    console.log('MAPZEN RESPONSE', body.features)
+    console.log('MAPBOX features', body.features)
     var feature = body.features[0]
     var [lon, lat] = feature.geometry.coordinates;
     var apiUrl = `https://api.developmentseed.org/satellites/?contains=${lon},${lat}&limit=1`;
