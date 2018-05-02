@@ -12,6 +12,7 @@
   "devDependencies": {},
   "dependencies": {
     "date-fns": "^1.28.3",
+    "mapbox": "^1.0.0-beta10",
     "request": "^2.81.0"
   }
 }

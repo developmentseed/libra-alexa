@@ -1,9 +1,9 @@
 const request = require('request');
-const mapboxApiClient = require('mapbox');
+const MapboxApiClient = require('mapbox');
 const getDate = require('./get-date');
 
 const MAPBOX_KEY = process.env.MAPBOX_KEY;
-const mapbox = mapboxApiClient(MAPBOX_KEY);
+const mapbox = new MapboxApiClient(MAPBOX_KEY);
 
 /*
 *
@@ -83,7 +83,7 @@ function getImageResponse (intentRequest, session, callback) {
 
   console.log('CITY VALUE', slots.City.value)
 
-  mapbox.geocodeForward(requestOptions, function (err, body, res) {
+  mapbox.geocodeForward(slots.City.value, function (err, body, res) {
     console.log('MAPBOX response', body)
     if (err || !body.features || body.features.length == 0) {
       console.log('ERROR?', err || !body.features || ('body.features.length ' + body.features.length))
@@ -95,7 +95,8 @@ function getImageResponse (intentRequest, session, callback) {
     var [lon, lat] = feature.geometry.coordinates;
     var apiUrl = `https://api.developmentseed.org/satellites/?contains=${lon},${lat}&limit=1`;
 
-    sessionAttributes.city = feature.properties;
+    sessionAttributes.city = feature;
+    sessionAttributes.city.name = sessionAttributes.city.place_name;
 
     if (slots.CloudPercentage.value) {
       const clouds = parseInt(slots.CloudPercentage.value);
@@ -143,7 +144,7 @@ function getImageResponse (intentRequest, session, callback) {
 
     requestImage(apiUrl, function (err, body) {
       options = {
-        title: sessionAttributes.city + ' Satellite Images',
+        title: sessionAttributes.city.name + ' Satellite Images',
         output: output,
         endSession: false
       };
